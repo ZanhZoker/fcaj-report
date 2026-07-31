@@ -108,8 +108,8 @@ lấy lát cắt sản phẩm tĩnh; đây chưa phải bằng chứng tích h�
 
 Proposal giao cho application Lambda phía sau API Gateway việc xác thực, xử lý
 nghiệp vụ, order, gọi recommendation và truy cập database. Tám bảng DynamoDB
-được liệt kê là `Products`, `Categories`, `Users`, `Sessions`, `Carts`,
-`Vouchers`, `Reviews`, `Orders`. Báo cáo giữ đây là thiết kế nhóm nhưng vẫn cần
+được liệt kê là **Products**, **Categories**, **Users**, **Sessions**, **Carts**,
+**Vouchers**, **Reviews**, **Orders**. Báo cáo giữ đây là thiết kế nhóm nhưng vẫn cần
 source backend/database hoặc bằng chứng triển khai.
 
 ### Recommendation và visual search

@@ -15,14 +15,14 @@ while the pipeline bucket stores incoming and generated batch artifacts.
 
 | Table | Intended data |
 |---|---|
-| `Products` | Product catalogue and identifiers |
-| `Categories` | Product grouping |
-| `Users` | Account records; passwords must never be stored in plain text |
-| `Sessions` | Authenticated sessions or revocation state |
-| `Carts` | User cart state |
-| `Vouchers` | Discount definitions and validity |
-| `Reviews` | Product reviews |
-| `Orders` | Order header and line data |
+| **Products** | Product catalogue and identifiers |
+| **Categories** | Product grouping |
+| **Users** | Account records; passwords must never be stored in plain text |
+| **Sessions** | Authenticated sessions or revocation state |
+| **Carts** | User cart state |
+| **Vouchers** | Discount definitions and validity |
+| **Reviews** | Product reviews |
+| **Orders** | Order header and line data |
 
 The supplied console capture confirms eight active on-demand DynamoDB tables
 and shows their primary-key layout.

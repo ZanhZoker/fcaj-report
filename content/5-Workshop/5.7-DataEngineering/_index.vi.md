@@ -58,7 +58,7 @@ Core trong `app/pipeline.py` kiểm tra:
 
 - thiếu `USER_ID`, `ITEM_ID` hoặc `TIMESTAMP`;
 - `ITEM_ID` không có trong lookup từ `Products.json`;
-- event ngoài `view`, `add_to_cart`, `remove_from_cart`, `purchase`;
+- event ngoài **view**, **add_to_cart**, **remove_from_cart**, **purchase**;
 - timestamp không phải Unix integer ASCII dương;
 - exact duplicate của một dòng hợp lệ đã nhận trước đó.
 
@@ -134,7 +134,7 @@ Policies:
 ```
 
 `app/lambda_handler.py` URL-decode S3 key, bỏ object ngoài phạm vi, kiểm tra size,
-tải ZIP, gọi core, ghi tám S3 object (bốn theo run và bốn `latest`) rồi log summary.
+tải ZIP, gọi core, ghi tám S3 object (bốn theo run và bốn `latest/`) rồi log summary.
 
 ```python
 if not key.startswith(input_prefix):
@@ -143,7 +143,7 @@ if not key.lower().endswith(".zip"):
     return {"status": "SKIPPED", "reason": "SUFFIX"}
 ```
 
-README hiện tại ghi nhận đã deploy và kiểm tra tại `ap-southeast-1`. Workshop note
+README hiện tại ghi nhận đã deploy và kiểm tra tại **ap-southeast-1**. Workshop note
 cũ hơn vẫn ghi deploy-ready; vì vậy ảnh AWS đã che thông tin nhạy cảm vẫn là minh
 chứng bắt buộc.
 
@@ -157,10 +157,10 @@ chứng bắt buộc.
 | Rejected / duplicate rows | 0 / 0 |
 | User / item duy nhất | 200 / 100 |
 | Product lookup IDs | 100 |
-| `view` | 17.089 |
-| `add_to_cart` | 4.382 |
-| `purchase` | 1.220 |
-| `remove_from_cart` | 686 |
+| **view** | 17.089 |
+| **add_to_cart** | 4.382 |
+| **purchase** | 1.220 |
+| **remove_from_cart** | 686 |
 | User/item ID sinh mới | 0 / 0 |
 | Bảo toàn ID | PASS |
 
@@ -182,7 +182,7 @@ def test_output_ids_are_subsets_of_input_ids():
 
 #### 10. Xác minh Athena tùy chọn
 
-Thư mục `athena/` có SQL tạo database `ecommerce_pipeline`, external table trỏ
+Thư mục `athena/` có SQL tạo database **ecommerce_pipeline**, external table trỏ
 đến `processed/latest/` và query kiểm tra count, distribution, distinct ID, giá
 trị sai, activity theo ngày và ID nguồn mẫu.
 

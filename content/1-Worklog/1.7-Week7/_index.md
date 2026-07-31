@@ -20,7 +20,7 @@ pre: " <b> 1.7 </b> "
 
 The repository now contains the Python pipeline, Lambda adapter, SAM template,
 Athena verification SQL, bilingual workshop notes, and automated tests. Its
-README records 48 passing tests and a checked deployment in `ap-southeast-1`
+README records 48 passing tests and a checked deployment in **ap-southeast-1**
 using S3, Lambda, CloudWatch Logs, and SAM/CloudFormation. I am organising the
 bilingual Hugo report and the evidence checklist.
 

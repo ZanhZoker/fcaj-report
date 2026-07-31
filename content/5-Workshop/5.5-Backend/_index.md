@@ -10,7 +10,7 @@ pre: " <b> 5.5 </b> "
 The proposal assigns the application API to API Gateway and an application
 Lambda. This component is separate from the Python Data Engineering Lambda. The
 available frontend repository does not contain this Lambda's source or API
-infrastructure. A supplied team console capture confirms the deployed `fcj-api`
+infrastructure. A supplied team console capture confirms the deployed **fcj-api**
 application Lambda; the responsibilities below remain the integration contract.
 
 ![Deployed application Lambda](/images/5-Workshop/team/application-lambda.png)

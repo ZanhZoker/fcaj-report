@@ -59,7 +59,7 @@ The core in `app/pipeline.py` validates:
 
 - missing `USER_ID`, `ITEM_ID`, or `TIMESTAMP`;
 - an `ITEM_ID` absent from the `Products.json` lookup;
-- an event outside `view`, `add_to_cart`, `remove_from_cart`, `purchase`;
+- an event outside **view**, **add_to_cart**, **remove_from_cart**, **purchase**;
 - a timestamp that is not a positive ASCII Unix integer;
 - an exact duplicate of a previously accepted normalised row.
 
@@ -142,7 +142,7 @@ Policies:
 
 `app/lambda_handler.py` URL-decodes the S3 key, skips unrelated objects, checks
 object size, downloads the ZIP, calls the core, writes eight S3 objects (four
-run-scoped and four `latest`), and logs an aggregate summary.
+run-scoped and four `latest/`), and logs an aggregate summary.
 
 ```python
 if not key.startswith(input_prefix):
@@ -152,7 +152,7 @@ if not key.lower().endswith(".zip"):
 ```
 
 The current repository README records deployment and verification in
-`ap-southeast-1`. The captures below confirm a valid SAM template, a successful
+**ap-southeast-1**. The captures below confirm a valid SAM template, a successful
 build, and a successfully created/updated CloudFormation stack.
 
 ![SAM template validation and build](/images/5-Workshop/data-engineering/sam-validate-build.png)
@@ -169,10 +169,10 @@ The checked `data_quality_report.json` records:
 | Rejected / duplicate rows | 0 / 0 |
 | Unique users / items | 200 / 100 |
 | Product lookup IDs | 100 |
-| `view` | 17,089 |
-| `add_to_cart` | 4,382 |
-| `purchase` | 1,220 |
-| `remove_from_cart` | 686 |
+| **view** | 17,089 |
+| **add_to_cart** | 4,382 |
+| **purchase** | 1,220 |
+| **remove_from_cart** | 686 |
 | Generated user/item IDs | 0 / 0 |
 | ID preservation | PASS |
 
@@ -196,7 +196,7 @@ def test_output_ids_are_subsets_of_input_ids():
 
 #### 10. Optional Athena verification
 
-The `athena/` folder contains SQL to create database `ecommerce_pipeline`, define
+The `athena/` folder contains SQL to create database **ecommerce_pipeline**, define
 an external table over `processed/latest/`, and check counts, distributions,
 distinct IDs, invalid values, daily activity, and sample original IDs.
 

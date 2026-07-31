@@ -10,7 +10,7 @@ pre: " <b> 5.5 </b> "
 Proposal giao application API cho API Gateway và một application Lambda. Thành
 phần này tách biệt với Lambda Python của Data Engineering. Repository nhóm hiện
 không có source Lambda ứng dụng hoặc hạ tầng API. Ảnh console do nhóm cung cấp
-xác nhận Lambda `fcj-api` đã triển khai; phần dưới giữ vai trò contract tích hợp.
+xác nhận Lambda **fcj-api** đã triển khai; phần dưới giữ vai trò contract tích hợp.
 
 ![Application Lambda đã triển khai](/images/5-Workshop/team/application-lambda.png)
 

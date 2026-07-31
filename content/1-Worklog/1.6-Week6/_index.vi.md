@@ -26,7 +26,7 @@ sinh surrogate ID. Tôi cập nhật bộ test và tài liệu chạy local/AWS.
 #### Kết quả
 
 - Report hiện tại: 23.377 input/clean rows, 0 rejected, 0 duplicate.
-- 200 user duy nhất, 100 item duy nhất và trạng thái bảo toàn ID `PASS`.
+- 200 user duy nhất, 100 item duy nhất và trạng thái bảo toàn ID **PASS**.
 - User ID sinh mới: 0; item ID sinh mới: 0.
 
 #### Khó khăn

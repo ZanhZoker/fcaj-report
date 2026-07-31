@@ -20,7 +20,7 @@ pre: " <b> 1.7 </b> "
 
 Repository hiện có pipeline Python, Lambda adapter, SAM template, SQL xác minh
 Athena, workshop song ngữ và automated tests. README ghi nhận 48 test đạt và đã
-kiểm tra triển khai tại `ap-southeast-1` với S3, Lambda, CloudWatch Logs và
+kiểm tra triển khai tại **ap-southeast-1** với S3, Lambda, CloudWatch Logs và
 SAM/CloudFormation. Tôi đang tổ chức nội dung Hugo song ngữ và checklist minh
 chứng.
 

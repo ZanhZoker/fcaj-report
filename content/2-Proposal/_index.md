@@ -111,8 +111,8 @@ a live Personalize integration.
 
 The proposal assigns authentication, business rules, order processing,
 recommendation calls, and database access to an application Lambda behind API
-Gateway. It lists `Products`, `Categories`, `Users`, `Sessions`, `Carts`,
-`Vouchers`, `Reviews`, and `Orders` as DynamoDB tables. These are kept as the
+Gateway. It lists **Products**, **Categories**, **Users**, **Sessions**, **Carts**,
+**Vouchers**, **Reviews**, and **Orders** as DynamoDB tables. These are kept as the
 team design but require backend/database source or deployment evidence.
 
 ### Recommendation and visual search

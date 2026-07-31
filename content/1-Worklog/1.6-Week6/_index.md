@@ -27,7 +27,7 @@ documentation for local and AWS execution.
 #### Results
 
 - Current report: 23,377 input and clean rows, 0 rejected, 0 duplicates.
-- 200 unique users, 100 unique items, and ID-preservation status `PASS`.
+- 200 unique users, 100 unique items, and ID-preservation status **PASS**.
 - Generated user IDs: 0; generated item IDs: 0.
 
 #### Challenges

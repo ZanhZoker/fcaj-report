@@ -15,14 +15,14 @@ pipeline lưu input và artifact batch được sinh ra.
 
 | Bảng | Dữ liệu dự kiến |
 |---|---|
-| `Products` | Catalog và định danh sản phẩm |
-| `Categories` | Nhóm sản phẩm |
-| `Users` | Account; mật khẩu không được lưu plain text |
-| `Sessions` | Session xác thực hoặc trạng thái thu hồi |
-| `Carts` | Trạng thái giỏ hàng theo user |
-| `Vouchers` | Định nghĩa và hiệu lực giảm giá |
-| `Reviews` | Đánh giá sản phẩm |
-| `Orders` | Order header và line data |
+| **Products** | Catalog và định danh sản phẩm |
+| **Categories** | Nhóm sản phẩm |
+| **Users** | Account; mật khẩu không được lưu plain text |
+| **Sessions** | Session xác thực hoặc trạng thái thu hồi |
+| **Carts** | Trạng thái giỏ hàng theo user |
+| **Vouchers** | Định nghĩa và hiệu lực giảm giá |
+| **Reviews** | Đánh giá sản phẩm |
+| **Orders** | Order header và line data |
 
 Ảnh console do thành viên nhóm cung cấp xác nhận tám bảng DynamoDB đang hoạt
 động ở chế độ on-demand và thể hiện cấu trúc khóa chính.
