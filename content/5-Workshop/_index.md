@@ -12,12 +12,9 @@ the verified implementation evidence currently available. The Data Engineering
 section is more detailed because it is my individual contribution; frontend,
 backend, database, recommendation, and visual search remain team components.
 
-{{% notice note %}}
-Status labels matter throughout this workshop: **source-verified** means the
-workspace contains supporting code or reports; **proposal** describes the target
-design; **evidence pending** means a responsible team member must provide direct
-source or screenshots before submission.
-{{% /notice %}}
+Throughout this workshop, **source-verified** identifies supporting code or
+reports, while **proposal** identifies the target design. Supplied deployment
+captures are shown next to the component they document.
 
 1. [Project Overview](5.1-Overview/)
 2. [Overall Architecture](5.2-Architecture/)

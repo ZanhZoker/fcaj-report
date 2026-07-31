@@ -212,17 +212,17 @@ và tích hợp ứng dụng sau đó.
 - [`tests/`](https://github.com/ZanhZoker/ecommerce-interactions-pipeline/tree/main/tests)
 - [`athena/`](https://github.com/ZanhZoker/ecommerce-interactions-pipeline/tree/main/athena)
 
-<!-- TODO: Personal evidence - automated tests -->
-<!-- TODO: Personal evidence - local pipeline execution -->
-<!-- TODO: Personal evidence - input ZIP structure -->
-<!-- TODO: Personal evidence - SAM or CloudFormation deployment -->
-<!-- TODO: Personal evidence - S3 incoming object -->
-<!-- TODO: Personal evidence - S3 trigger -->
-<!-- TODO: Personal evidence - Data Processing Lambda -->
-<!-- TODO: Personal evidence - IAM execution role -->
-<!-- TODO: Personal evidence - CloudWatch execution log -->
-<!-- TODO: Personal evidence - processed output -->
-<!-- TODO: Personal evidence - rejected output -->
-<!-- TODO: Personal evidence - data quality report -->
-<!-- TODO: Personal evidence - original IDs preserved -->
-<!-- TODO: Personal evidence - Athena verification -->
+
+#### Minh chứng triển khai và kết quả
+
+![Kết quả chạy local và bộ test tự động](/images/5-Workshop/data-engineering/local-run-and-tests.png)
+
+![SAM template hợp lệ và build thành công](/images/5-Workshop/data-engineering/sam-validate-build.png)
+
+![SAM deploy thành công](/images/5-Workshop/data-engineering/sam-deploy-success.png)
+
+![Các prefix incoming, processed, rejected và reports trên S3](/images/5-Workshop/data-engineering/s3-pipeline-prefixes.png)
+
+![Dataset tương tác sạch trong prefix latest](/images/5-Workshop/data-engineering/processed-clean-output.png)
+
+![CloudWatch summary của lần chạy pipeline thành công](/images/5-Workshop/data-engineering/cloudwatch-run-summary.png)

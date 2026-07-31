@@ -61,7 +61,7 @@ Giải pháp mục tiêu gồm bốn lớp phối hợp:
 
 ## 5. Kiến trúc tổng thể
 
-![Kiến trúc mục tiêu của nhóm](/images/5-Workshop/architecture.png)
+![Kiến trúc mục tiêu của nhóm](/images/5-Workshop/team-architecture-2026.jpg)
 
 Hình trên là kiến trúc tham chiếu của nhóm, không phải bằng chứng triển khai.
 Luồng ứng dụng dự kiến:
@@ -85,14 +85,14 @@ Database export ZIP → S3 incoming/ → data-processing Lambda
 |---|---|---|
 | React, Vite, Redux Toolkit | Trải nghiệm web của nhóm | Có trong source frontend |
 | Mock API và local storage | Lớp dữ liệu prototype hiện tại | Có trong source frontend |
-| S3 và CloudFront | Static hosting và HTTPS mục tiêu | Proposal; chờ minh chứng nhóm |
-| API Gateway và application Lambda | API serverless và nghiệp vụ mục tiêu | Proposal; chờ source ứng dụng |
-| DynamoDB | Kho dữ liệu ứng dụng mục tiêu | Thiết kế tám bảng trong proposal; chờ source |
+| S3 và CloudFront | Static hosting và HTTPS mục tiêu | Có ảnh triển khai CloudFront và S3 của nhóm trong Workshop 5.4 |
+| API Gateway và application Lambda | API serverless và nghiệp vụ mục tiêu | Có ảnh Application Lambda; source triển khai không nằm trong các repository đã rà soát |
+| DynamoDB | Kho dữ liệu ứng dụng mục tiêu | Có ảnh tám bảng active on-demand và key layout; source triển khai không nằm trong các repository đã rà soát |
 | S3 và data-processing Lambda | Input/output và compute cho pipeline | Có trong source Data Engineering |
 | CloudWatch Logs | Log thực thi pipeline | Có trong SAM template và trạng thái repository |
 | SAM/CloudFormation | Infrastructure as Code cho pipeline | Có trong `template.yaml` |
-| Athena | Xác minh clean CSV tùy chọn | Đã có SQL; chờ minh chứng thực thi |
-| Amazon Personalize | Train và phục vụ recommendation của nhóm | Proposal/blog; chờ minh chứng triển khai |
+| Athena | Xác minh clean CSV tùy chọn | Đã có SQL; báo cáo không khẳng định đã chạy query |
+| Amazon Personalize | Train và phục vụ recommendation của nhóm | Có ảnh triển khai và model metrics trong Workshop 5.8 |
 | CLIP | Ý tưởng visual search của nhóm | Proposal; frontend hiện có chưa triển khai |
 
 ## 7. Thiết kế thành phần
@@ -234,10 +234,9 @@ Lambda nhiều record và bảo toàn ID.
 
 Blog/proposal được cung cấp ghi nhận Precision, NDCG, MRR và Coverage cho hai
 dataset Personalize. Đây là metric model recommendation thuộc phần ML của nhóm,
-không phải metric pipeline Data Engineering của tôi. Vẫn cần ảnh/source
-Personalize trực tiếp trước khi xem đây là bằng chứng triển khai. Kiểm thử
-frontend, API, checkout, recommendation và tích hợp toàn hệ thống cũng là bằng
-chứng cấp nhóm cần bổ sung.
+không phải metric pipeline Data Engineering của tôi. Ảnh dataset group và
+solution metrics xác nhận tài nguyên tương ứng; báo cáo không suy rộng các ảnh
+component này thành kết quả kiểm thử tích hợp đầu cuối.
 
 ## 14. Ước tính ngân sách
 
@@ -285,13 +284,13 @@ Gateway, OpenSearch hoặc SageMaker. SAM template giữ log trong bảy ngày.
 
 | Sản phẩm | Trạng thái |
 |---|---|
-| Website báo cáo Hugo song ngữ | Đang thực hiện |
+| Website báo cáo Hugo song ngữ | Đã hợp nhất nội dung Workshop và Event |
 | Source frontend nhóm | Có sẵn |
 | Source, README và kiến trúc Data Engineering | Có sẵn |
 | `template.yaml` và Lambda pipeline | Có sẵn |
 | Automated tests và quality report local | Có sẵn |
 | SQL Athena | Có sẵn; chưa có minh chứng chạy tùy chọn |
 | Data contract bàn giao clean dataset | Có sẵn |
-| Source backend/database/Personalize/CLIP của nhóm | Chờ thành viên phụ trách |
-| Ảnh triển khai nhóm và cá nhân | Chờ hoàn thành checklist |
-| Minh chứng Event và nộp bài | Kế hoạch |
+| Source backend/database/Personalize/CLIP của nhóm | Không có trong các repository đã rà soát; ảnh component được ghi nhãn riêng |
+| Ảnh triển khai nhóm và cá nhân | Có cho các component được trình bày |
+| Minh chứng Event | Có cho cả ba buổi được trình bày |

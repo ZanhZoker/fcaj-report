@@ -14,12 +14,12 @@ nhầm thành kết quả toàn hệ thống chưa có bằng chứng.
 
 | Phần | Kiểm thử cần có | Trạng thái hiện tại |
 |---|---|---|
-| Frontend | Build, routing, catalog, search, cart, checkout, account | Có source; chờ bằng chứng chạy |
-| Backend/API | Auth, validation, product/cart/order, CORS, error | Chờ source và bằng chứng chạy |
-| Database | Key, access pattern, ownership, nhất quán order | Chờ source và bằng chứng |
-| Recommendation | Import, model metric, khác biệt user, giữ thứ tự | Chờ bằng chứng nhóm |
-| Visual search | Ảnh input, embedding/cache, kết quả similarity | Chờ bằng chứng triển khai |
-| Integration | Export → clean data → ML → API → frontend | Chờ bằng chứng đầu cuối |
+| Frontend | Build, routing, catalog, search, cart, checkout, account | Có source và ảnh giao diện |
+| Backend/API | Auth, validation, product/cart/order, CORS, error | Đã xác nhận Lambda; kiểm tra route/response thuộc phạm vi nhóm |
+| Database | Key, access pattern, ownership, nhất quán order | Có ảnh bảng active và key layout |
+| Recommendation | Import, model metric, khác biệt user, giữ thứ tự | Có ảnh dataset group và solution metric |
+| Visual search | Ảnh input, embedding/cache, kết quả similarity | Phạm vi proposal; báo cáo không khẳng định kết quả triển khai |
+| Integration | Export → clean data → ML → API → frontend | Đã mô tả ranh giới component; báo cáo không khẳng định kết quả đầu cuối |
 
 Không đánh dấu một dòng hoàn thành chỉ từ ảnh một component. Kết quả integration
 hợp lệ phải nêu input, expected output, actual output và cùng định danh qua từng
@@ -57,7 +57,7 @@ xử lý lỗi; bộ test đã kiểm tra các tình huống đó.
 5. Trên AWS, khớp S3 artifact với CloudWatch summary theo run ID.
 6. Nếu dùng Athena, đối chiếu count với JSON report.
 
-<!-- TODO: Team evidence - frontend and checkout tests -->
-<!-- TODO: Team evidence - backend API tests -->
-<!-- TODO: Team evidence - recommendation and integration tests -->
-<!-- TODO: Personal evidence - automated test result and output verification -->
+![Kết quả chạy local và automated tests](/images/5-Workshop/data-engineering/local-run-and-tests.png)
+
+*Minh chứng Data Engineering: pipeline giữ nguyên 23.377 bản ghi sạch, không tạo
+ID mới và bộ automated tests đạt 48/48.*

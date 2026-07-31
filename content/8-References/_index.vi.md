@@ -11,10 +11,8 @@ pre: " <b> 8. </b> "
 - [Repository báo cáo thực tập](https://github.com/ZanhZoker/fcaj-report)
 - [Repository Data Engineering](https://github.com/ZanhZoker/ecommerce-interactions-pipeline)
 - [Repository thương mại điện tử của nhóm](https://github.com/dxsondangdung2019-arch/E-commerceWebsiteDesign)
+- [Báo cáo frontend của nhóm](https://dxsondangdung2019-arch.github.io/E-commerceWebsiteDesign/)
 - [Yêu cầu project và báo cáo FCAJ](https://hcm-rules.awsfcaj.com/3-project/)
-
-<!-- TODO: Add the deployed frontend URL after the team verifies it -->
-<!-- TODO: Add the final video demo URL -->
 
 #### Triển khai Data Engineering
 
@@ -26,8 +24,6 @@ pre: " <b> 8. </b> "
 - [Lambda handler](https://github.com/ZanhZoker/ecommerce-interactions-pipeline/blob/main/app/lambda_handler.py)
 - [Automated tests](https://github.com/ZanhZoker/ecommerce-interactions-pipeline/tree/main/tests)
 - [SQL tạo database Athena](https://github.com/ZanhZoker/ecommerce-interactions-pipeline/blob/main/athena/create_database.sql), [SQL tạo bảng](https://github.com/ZanhZoker/ecommerce-interactions-pipeline/blob/main/athena/create_table.sql) và [truy vấn mẫu](https://github.com/ZanhZoker/ecommerce-interactions-pipeline/blob/main/athena/sample_queries.sql)
-
-<!-- TODO: Add the architecture draw.io source if the team publishes it -->
 
 #### Blog đã đăng
 

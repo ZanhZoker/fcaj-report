@@ -9,8 +9,11 @@ pre: " <b> 5.5 </b> "
 
 The proposal assigns the application API to API Gateway and an application
 Lambda. This component is separate from the Python Data Engineering Lambda. The
-available team repository does not contain the application Lambda or API
-infrastructure, so the design below is retained as the team integration target.
+available frontend repository does not contain this Lambda's source or API
+infrastructure. A supplied team console capture confirms the deployed `fcj-api`
+application Lambda; the responsibilities below remain the integration contract.
+
+![Deployed application Lambda](/images/5-Workshop/team/application-lambda.png)
 
 #### Target responsibilities
 
@@ -48,6 +51,6 @@ After application source and infrastructure are available, inspect configured
 routes, invoke representative requests, confirm least-privilege database and
 Personalize access, and capture sanitized success/error responses.
 
-<!-- TODO: Team evidence - API Gateway routes -->
-<!-- TODO: Team evidence - application Lambda -->
-<!-- TODO: Team evidence - successful API response -->
+The image proves the application Lambda resource. API Gateway routes and
+representative responses are described without a deployment claim because no
+sanitized direct capture was supplied for those two views.

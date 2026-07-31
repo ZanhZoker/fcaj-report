@@ -9,8 +9,10 @@ pre: " <b> 5.5 </b> "
 
 Proposal giao application API cho API Gateway và một application Lambda. Thành
 phần này tách biệt với Lambda Python của Data Engineering. Repository nhóm hiện
-không có application Lambda hoặc hạ tầng API, vì vậy phần dưới được giữ ở mức
-mục tiêu tích hợp của nhóm.
+không có source Lambda ứng dụng hoặc hạ tầng API. Ảnh console do nhóm cung cấp
+xác nhận Lambda `fcj-api` đã triển khai; phần dưới giữ vai trò contract tích hợp.
+
+![Application Lambda đã triển khai](/images/5-Workshop/team/application-lambda.png)
 
 #### Trách nhiệm mục tiêu
 
@@ -48,6 +50,6 @@ Sau khi có source và infrastructure ứng dụng, cần kiểm tra route đã 
 gọi request đại diện, xác nhận quyền database/Personalize tối thiểu và chụp
 response thành công/lỗi đã che dữ liệu nhạy cảm.
 
-<!-- TODO: Team evidence - API Gateway routes -->
-<!-- TODO: Team evidence - application Lambda -->
-<!-- TODO: Team evidence - successful API response -->
+Ảnh xác nhận resource Lambda ứng dụng. Báo cáo mô tả API Gateway route và
+response đại diện ở mức contract vì chưa có ảnh trực tiếp đã che dữ liệu cho hai
+view đó.

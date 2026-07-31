@@ -14,12 +14,12 @@ mistaken for unverified whole-system results.
 
 | Area | Required test | Current status |
 |---|---|---|
-| Frontend | Build, routing, catalogue, search, cart, checkout, account | Source available; recorded execution evidence pending |
-| Backend/API | Auth, validation, product/cart/order routes, CORS, errors | Source and execution evidence pending |
-| Database | Keys, access patterns, ownership, order consistency | Source and evidence pending |
-| Recommendation | Import, model metrics, user variation, rank preservation | Team evidence pending |
-| Visual search | Image input, embedding/cache, similarity result | Implementation evidence pending |
-| Integration | Export → clean data → ML → API → frontend | End-to-end evidence pending |
+| Frontend | Build, routing, catalogue, search, cart, checkout, account | Source and interface captures available |
+| Backend/API | Auth, validation, product/cart/order routes, CORS, errors | Lambda resource confirmed; route/response checks remain team-owned |
+| Database | Keys, access patterns, ownership, order consistency | Active tables and key layout captured |
+| Recommendation | Import, model metrics, user variation, rank preservation | Dataset group and solution metrics captured |
+| Visual search | Image input, embedding/cache, similarity result | Proposal scope; no implementation result is claimed |
+| Integration | Export → clean data → ML → API → frontend | Component boundaries documented; no full-path result is claimed |
 
 Do not mark the row complete from a screenshot of only one component. A valid
 integration result must identify the input, expected output, actual output, and
@@ -57,7 +57,4 @@ does not remove the rejected-data path; tests exercise the failure cases.
 5. On AWS, match S3 artifacts and the CloudWatch run summary by run ID.
 6. If Athena is used, reconcile its counts with the JSON report.
 
-<!-- TODO: Team evidence - frontend and checkout tests -->
-<!-- TODO: Team evidence - backend API tests -->
-<!-- TODO: Team evidence - recommendation and integration tests -->
-<!-- TODO: Personal evidence - automated test result and output verification -->
+![Automated tests and local output verification](/images/5-Workshop/data-engineering/local-run-and-tests.png)

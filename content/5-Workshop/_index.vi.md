@@ -12,11 +12,9 @@ bằng chứng triển khai hiện có. Phần Data Engineering chi tiết hơn 
 góp cá nhân của tôi; frontend, backend, database, recommendation và visual search
 là các thành phần chung của nhóm.
 
-{{% notice note %}}
-Nhãn trạng thái được dùng xuyên suốt: **source đã xác nhận** nghĩa là workspace
-có code hoặc report hỗ trợ; **proposal** là thiết kế mục tiêu; **chờ minh chứng**
-nghĩa là cần source hoặc ảnh trực tiếp từ thành viên phụ trách trước khi nộp.
-{{% /notice %}}
+Trong workshop, **source đã xác nhận** nghĩa là workspace có code hoặc report hỗ
+trợ, còn **proposal** là thiết kế mục tiêu. Ảnh triển khai được đặt ngay cạnh
+component mà ảnh mô tả.
 
 1. [Tổng quan project](5.1-Overview/)
 2. [Kiến trúc tổng thể](5.2-Architecture/)

@@ -101,6 +101,10 @@ On AWS, each artifact is written under both `run_id=<RUN_ID>/` and `latest/`.
 The stable run ID is derived from S3 object identity, so a redelivered event
 overwrites the same run-scoped artifacts instead of creating unlimited copies.
 
+![S3 prefixes for incoming, processed, rejected, and reports](/images/5-Workshop/data-engineering/s3-pipeline-prefixes.png)
+
+![Clean interaction dataset in the stable latest prefix](/images/5-Workshop/data-engineering/processed-clean-output.png)
+
 #### 6. Local execution
 
 `app/cli.py` calls the same storage-independent core used by Lambda:
@@ -117,6 +121,8 @@ write_local_outputs(result, args.output)
 
 The CLI prints input, clean, rejected, duplicate, unique user/item, and ID audit
 summaries. A failed contract returns a non-zero exit code and a clear message.
+
+![Successful local pipeline run and automated tests](/images/5-Workshop/data-engineering/local-run-and-tests.png)
 
 #### 7. AWS event-driven execution
 
@@ -146,8 +152,12 @@ if not key.lower().endswith(".zip"):
 ```
 
 The current repository README records deployment and verification in
-`ap-southeast-1`. The repository's older workshop note still says deploy-ready;
-therefore sanitized AWS screenshots remain a required evidence item.
+`ap-southeast-1`. The captures below confirm a valid SAM template, a successful
+build, and a successfully created/updated CloudFormation stack.
+
+![SAM template validation and build](/images/5-Workshop/data-engineering/sam-validate-build.png)
+
+![Successful SAM deployment](/images/5-Workshop/data-engineering/sam-deploy-success.png)
 
 #### 8. Confirmed local data result
 
@@ -168,6 +178,8 @@ The checked `data_quality_report.json` records:
 
 These are Data Engineering quality metrics. Precision, NDCG, MRR, and Coverage
 belong to ML model evaluation and are not pipeline scores.
+
+![CloudWatch summary for the successful pipeline run](/images/5-Workshop/data-engineering/cloudwatch-run-summary.png)
 
 #### 9. Automated tests
 
@@ -214,18 +226,3 @@ integration.
 - [`app/cli.py`](https://github.com/ZanhZoker/ecommerce-interactions-pipeline/blob/main/app/cli.py)
 - [`tests/`](https://github.com/ZanhZoker/ecommerce-interactions-pipeline/tree/main/tests)
 - [`athena/`](https://github.com/ZanhZoker/ecommerce-interactions-pipeline/tree/main/athena)
-
-<!-- TODO: Personal evidence - automated tests -->
-<!-- TODO: Personal evidence - local pipeline execution -->
-<!-- TODO: Personal evidence - input ZIP structure -->
-<!-- TODO: Personal evidence - SAM or CloudFormation deployment -->
-<!-- TODO: Personal evidence - S3 incoming object -->
-<!-- TODO: Personal evidence - S3 trigger -->
-<!-- TODO: Personal evidence - Data Processing Lambda -->
-<!-- TODO: Personal evidence - IAM execution role -->
-<!-- TODO: Personal evidence - CloudWatch execution log -->
-<!-- TODO: Personal evidence - processed output -->
-<!-- TODO: Personal evidence - rejected output -->
-<!-- TODO: Personal evidence - data quality report -->
-<!-- TODO: Personal evidence - original IDs preserved -->
-<!-- TODO: Personal evidence - Athena verification -->

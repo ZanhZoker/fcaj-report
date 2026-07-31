@@ -51,7 +51,3 @@ The Data Engineering side of the handoff is source-verified and has a confirmed
 local report. The available frontend source is a mock-data prototype. The ML
 import, application API, live product lookup, and browser response still require
 team source or deployment evidence.
-
-<!-- TODO: Team evidence - end-to-end data handoff record -->
-<!-- TODO: Team evidence - backend recommendation response -->
-<!-- TODO: Team evidence - frontend live recommendation rendering -->

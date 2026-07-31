@@ -28,8 +28,8 @@ This report presents the team's AWS e-commerce system, which combines product
 browsing and shopping flows with recommendation and visual-search concepts. The
 target architecture connects a React/Vite frontend with serverless application,
 database, and machine-learning components. Each section distinguishes
-source-verified implementation from proposal-level design and pending team
-evidence.
+source-verified implementation, supplied deployment captures, and
+proposal-level design.
 
 My main contribution is the Data Engineering pipeline for interaction data. I
 designed and implemented the workflow that reads an export ZIP, validates and

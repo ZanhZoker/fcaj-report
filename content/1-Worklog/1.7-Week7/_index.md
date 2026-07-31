@@ -34,12 +34,10 @@ bilingual Hugo report and the evidence checklist.
 #### Challenges
 
 The source documents contain an older note that describes AWS as deploy-ready,
-while the newer README records a deployment. The report therefore keeps AWS
-screenshot capture as pending evidence instead of relying only on text.
+while the newer README records a deployment. The workshop now pairs that text
+with supplied SAM build, deployment, S3, and CloudWatch captures.
 
 #### Next steps
 
 Finish bilingual workshop pages and collect deployment evidence without exposing
 credentials or unrelated account information.
-
-<!-- TODO: Personal evidence - automated tests and AWS deployment -->

@@ -13,8 +13,7 @@ pre: " <b> 8. </b> "
 - [Team e-commerce repository](https://github.com/dxsondangdung2019-arch/E-commerceWebsiteDesign)
 - [FCAJ project and report requirements](https://hcm-rules.awsfcaj.com/3-project/)
 
-<!-- TODO: Add the deployed frontend URL after the team verifies it -->
-<!-- TODO: Add the final video demo URL -->
+- [Frontend implementation report](https://dxsondangdung2019-arch.github.io/fcaj-son-report/)
 
 #### Data Engineering implementation
 
@@ -27,7 +26,6 @@ pre: " <b> 8. </b> "
 - [Automated tests](https://github.com/ZanhZoker/ecommerce-interactions-pipeline/tree/main/tests)
 - [Athena database SQL](https://github.com/ZanhZoker/ecommerce-interactions-pipeline/blob/main/athena/create_database.sql), [table SQL](https://github.com/ZanhZoker/ecommerce-interactions-pipeline/blob/main/athena/create_table.sql), and [sample queries](https://github.com/ZanhZoker/ecommerce-interactions-pipeline/blob/main/athena/sample_queries.sql)
 
-<!-- TODO: Add the architecture draw.io source if the team publishes it -->
 
 #### Published blogs
 

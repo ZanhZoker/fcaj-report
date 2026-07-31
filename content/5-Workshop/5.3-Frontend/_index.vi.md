@@ -36,8 +36,10 @@ aws s3 sync .\dist "s3://<FRONTEND_BUCKET>/" --delete
 aws cloudfront create-invalidation --distribution-id <DISTRIBUTION_ID> --paths "/*"
 ```
 
-Các lệnh là quy trình triển khai, không phải bằng chứng resource đã tồn tại. Chỉ
-thay placeholder khi thành viên phụ trách xác nhận tên resource thật.
+Các lệnh mô tả quy trình triển khai có thể lặp lại. Ảnh do thành viên nhóm cung
+cấp bên dưới xác nhận một CloudFront distribution đang bật cho frontend.
+
+![CloudFront distribution của frontend nhóm đang hoạt động](/images/5-Workshop/team/cloudfront-distribution.png)
 
 #### Kiểm tra
 
@@ -47,6 +49,12 @@ thay placeholder khi thành viên phụ trách xác nhận tên resource thật.
 - Xác nhận S3 origin không public nếu dùng OAC.
 - Chỉ xác nhận browser dùng API mục tiêu sau khi tích hợp tồn tại.
 
-<!-- TODO: Team evidence - deployed CloudFront website -->
-<!-- TODO: Team evidence - homepage and product browsing -->
-<!-- TODO: Team evidence - recommendation section -->
+![Giao diện danh mục và flash sale](/images/5-Workshop/frontend/catalog.png)
+
+*Frontend nhóm thể hiện điều hướng danh mục, thẻ sản phẩm, giá, đánh giá và
+trạng thái còn hàng.*
+
+![Giao diện chi tiết sản phẩm](/images/5-Workshop/frontend/product-detail.png)
+
+*Route chi tiết sản phẩm minh họa chọn số lượng cùng thao tác thêm giỏ hàng và
+mua ngay trong UI prototype.*

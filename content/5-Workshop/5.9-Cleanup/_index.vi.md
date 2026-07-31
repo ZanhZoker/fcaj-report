@@ -5,9 +5,10 @@ chapter: false
 pre: " <b> 5.13 </b> "
 ---
 
-{{% notice warning %}}
-Thao tác xóa không thể hoàn tác. Trước khi chạy lệnh, phải xác nhận AWS account, region, tên stack, tên bucket và minh chứng cần giữ. Thay mọi placeholder bằng giá trị đã kiểm tra trên console; không chạy lệnh phá hủy với tài nguyên phỏng đoán.
-{{% /notice %}}
+**An toàn khi xóa:** Thao tác xóa không thể hoàn tác. Trước khi chạy lệnh, phải
+xác nhận AWS account, Region, tên stack, tên bucket và minh chứng cần giữ. Chỉ
+dùng giá trị đã kiểm tra trên console; không chạy lệnh phá hủy với tài nguyên
+phỏng đoán.
 
 #### Stack Data Engineering
 
@@ -32,7 +33,3 @@ Thành viên phụ trách cần kiểm kê và chỉ xóa những tài nguyên t
 7. Kiểm tra resource inventory và billing view của region để phát hiện tài nguyên còn phát sinh phí.
 
 Đây là quy trình thực hiện, không phải tuyên bố cleanup đã hoàn thành.
-
-<!-- TODO: Team evidence - resource inventory before cleanup -->
-<!-- TODO: Team evidence - resource inventory after cleanup -->
-<!-- TODO: Personal evidence - SAM stack deletion or confirmed retained environment -->

@@ -15,7 +15,11 @@ Phần này tách biệt các biện pháp đã được xác nhận trong sourc
 - **Cấu hình:** bucket và các output prefix được truyền qua biến môi trường. Credential và secret không được lưu trong repository.
 - **Khả năng quan sát lỗi:** lỗi validation được ghi thành artifact rejected và được tổng hợp trong quality report JSON và Markdown. Ngoại lệ không dự kiến được ghi vào Lambda log.
 
-Repository không xác nhận CloudWatch alarm, SNS topic hoặc thông báo email, vì vậy báo cáo không trình bày các tài nguyên này như đã triển khai.
+Repository Data Engineering không định nghĩa alarm hoặc SNS notification. Tách
+biệt với pipeline, ảnh do nhóm cung cấp xác nhận CloudWatch alarm cho lỗi và độ
+trễ của Lambda ứng dụng.
+
+![CloudWatch alarm cho lỗi và độ trễ ứng dụng](/images/5-Workshop/team/cloudwatch-alarms.png)
 
 #### Mục tiêu bảo mật cho ứng dụng nhóm
 
@@ -23,10 +27,10 @@ Proposal hướng đến HTTPS qua CloudFront, S3 origin riêng tư với Origin
 
 Trước khi phát hành production, nhóm cần xác minh phân quyền request, kiểm tra input, password hashing, quản lý secret, che dữ liệu nhạy cảm trong log, CORS, quyền tối thiểu và thời gian lưu log trên toàn bộ application stack.
 
-<!-- TODO: Team evidence - CloudFront HTTPS and private origin configuration -->
-<!-- TODO: Team evidence - application IAM roles and security review -->
-<!-- TODO: Team evidence - application logs or monitoring dashboard -->
-<!-- TODO: Personal evidence - CloudWatch execution log with sensitive values redacted -->
+![Sự kiện thực thi Lambda Data Engineering](/images/5-Workshop/data-engineering/cloudwatch-log-events.png)
+
+Ảnh ghi nhận một lần Lambda chạy thành công. Summary chi tiết được trình bày ở
+phần Data Engineering sau khi loại bỏ định danh cấp tài khoản.
 
 #### Checklist minh chứng
 

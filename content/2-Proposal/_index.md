@@ -63,7 +63,7 @@ The target solution combines four cooperating layers:
 
 ## 5. Overall Architecture
 
-![Target team architecture](/images/5-Workshop/architecture.png)
+![Target team architecture](/images/5-Workshop/team-architecture-2026.jpg)
 
 The image is the team's reference architecture, not deployment evidence. The
 intended application path is:
@@ -87,14 +87,14 @@ Database export ZIP → S3 incoming/ → data-processing Lambda
 |---|---|---|
 | React, Vite, Redux Toolkit | Team web experience | Confirmed in frontend source |
 | Browser mock API and local storage | Current prototype data layer | Confirmed in frontend source |
-| S3 and CloudFront | Target static hosting and HTTPS delivery | Proposal; team evidence pending |
-| API Gateway and application Lambda | Target serverless API and business logic | Proposal; application source pending |
-| DynamoDB | Target application data store | Eight-table design in proposal; source pending |
+| S3 and CloudFront | Static hosting and HTTPS delivery | Team deployment evidenced by the CloudFront and S3 captures in Workshop 5.4 |
+| API Gateway and application Lambda | Target serverless API and business logic | Application Lambda capture supplied; implementation source is not in the reviewed repositories |
+| DynamoDB | Target application data store | Eight active on-demand tables and key layouts captured; implementation source is not in the reviewed repositories |
 | S3 and data-processing Lambda | Interaction pipeline input/output and compute | Confirmed in Data Engineering source |
 | CloudWatch Logs | Pipeline execution logging | Confirmed in SAM template and repository status |
 | SAM/CloudFormation | Pipeline infrastructure as code | Confirmed in `template.yaml` |
-| Athena | Optional clean-CSV verification | SQL supplied; execution evidence pending |
-| Amazon Personalize | Team recommendation training and serving | Proposal/blog evidence; deployment evidence pending |
+| Athena | Optional clean-CSV verification | SQL supplied; no executed query is claimed |
+| Amazon Personalize | Team recommendation training and serving | Team deployment and model metrics are evidenced in Workshop 5.8 |
 | CLIP | Team visual-search concept | Proposal; available frontend does not implement it |
 
 ## 7. Component Design
@@ -197,7 +197,7 @@ duplicated in this report.
 | 29 Jun-12 Jul | Pipeline/data-contract design and initial implementation | Completed |
 | 13-26 Jul | ML handoff clarification, real-export alignment, tests/docs | Completed |
 | 27 Jul-02 Aug | Source completion, AWS verification, Hugo report | In progress |
-| 03-09 Aug | Team/personal evidence and bilingual workshop | Planned |
+| 03-09 Aug | Bilingual workshop consolidation and final review | Planned |
 | 10-14 Aug | Event, final review, cleanup, and submission | Planned |
 
 ## 12. Data Flow and Integration
@@ -292,13 +292,13 @@ seven days.
 
 | Deliverable | Status |
 |---|---|
-| Bilingual Hugo internship report | In progress |
+| Bilingual Hugo internship report | Workshop and event content consolidated |
 | Team frontend source | Available |
 | Data Engineering source, README, and architecture | Available |
 | `template.yaml` and Lambda pipeline | Available |
 | Automated tests and local quality report | Available |
 | Athena SQL | Available; optional execution not yet evidenced |
 | Clean dataset handoff contract | Available |
-| Team backend/database/Personalize/CLIP source | Pending from responsible members |
-| Team and personal deployment screenshots | Pending checklist completion |
-| Event evidence and final submission evidence | Planned |
+| Team backend/database/Personalize/CLIP source | Not present in the reviewed repositories; component captures are labelled separately |
+| Team and personal deployment screenshots | Available for the documented components |
+| Event evidence | Available for all three documented sessions |

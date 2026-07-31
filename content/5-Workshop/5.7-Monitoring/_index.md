@@ -15,7 +15,11 @@ This section separates controls confirmed in the Data Engineering source from co
 - **Configuration:** bucket and output prefixes are supplied through environment variables. Credentials and secrets are not stored in the repository.
 - **Failure visibility:** validation errors are written as rejected-row artifacts and summarized in JSON and Markdown quality reports. Unexpected exceptions are recorded in Lambda logs.
 
-The repository does not confirm CloudWatch alarms, SNS topics, or email notifications, so this report does not present them as deployed resources.
+The Data Engineering repository does not define alarms or SNS notifications.
+Separately, a team-supplied capture confirms application-level CloudWatch alarms
+for Lambda errors and latency.
+
+![Application CloudWatch alarms for errors and latency](/images/5-Workshop/team/cloudwatch-alarms.png)
 
 #### Team application security targets
 
@@ -23,10 +27,10 @@ The proposal calls for HTTPS through CloudFront, a private S3 origin with Origin
 
 Before a production release, the team should verify request authorization, input validation, password hashing, secret storage, log redaction, CORS, least-privilege access, and retention settings across the application stack.
 
-<!-- TODO: Team evidence - CloudFront HTTPS and private origin configuration -->
-<!-- TODO: Team evidence - application IAM roles and security review -->
-<!-- TODO: Team evidence - application logs or monitoring dashboard -->
-<!-- TODO: Personal evidence - CloudWatch execution log with sensitive values redacted -->
+![Data Engineering Lambda execution events](/images/5-Workshop/data-engineering/cloudwatch-log-events.png)
+
+The capture records a successful Lambda invocation. The detailed run summary is
+shown in the Data Engineering section with account-level identifiers removed.
 
 #### Evidence checklist
 

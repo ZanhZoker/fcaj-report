@@ -38,7 +38,5 @@ hugo version
 Never paste real access keys, secret keys, session tokens, passwords, or MFA
 values into commands, screenshots, source files, or this report.
 
-{{% notice warning %}}
-Before creating cloud resources, confirm the selected AWS account, Region,
-profile, expected cost, and cleanup owner.
-{{% /notice %}}
+**Cloud safety:** Before creating resources, confirm the selected AWS account,
+Region, profile, expected cost, and cleanup owner.

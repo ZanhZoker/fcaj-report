@@ -34,12 +34,10 @@ chứng.
 #### Khó khăn
 
 Tài liệu source có ghi chú cũ mô tả trạng thái deploy-ready, trong khi README mới
-hơn ghi nhận đã deploy. Báo cáo vì vậy vẫn để phần chụp minh chứng AWS ở trạng
-thái chờ thay vì chỉ dựa trên mô tả văn bản.
+hơn ghi nhận đã deploy. Workshop hiện đối chiếu nội dung đó với ảnh SAM build,
+deploy, S3 và CloudWatch được cung cấp.
 
 #### Bước tiếp theo
 
 Hoàn thiện workshop song ngữ và thu thập minh chứng triển khai, không để lộ
 credential hay tài nguyên ngoài phạm vi.
-
-<!-- TODO: Personal evidence - automated tests and AWS deployment -->

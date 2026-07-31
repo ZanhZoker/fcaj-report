@@ -7,11 +7,11 @@ pre: " <b> 5.2 </b> "
 
 # Overall Architecture
 
-![Overall team architecture](/images/5-Workshop/architecture.png)
+![Overall team architecture](/images/5-Workshop/team-architecture-2026.jpg)
 
-The diagram represents the team's target architecture. It must be read with the
-evidence matrix below; an architecture symbol alone does not prove that a
-resource has been deployed.
+This is the team's latest overall architecture. It retains the application path
+and adds the Data Engineering upload, processing, training-data handoff,
+recommendation, monitoring, notification, and IAM relationships in one view.
 
 #### Application path
 
@@ -37,7 +37,5 @@ resource has been deployed.
 - SAM/CloudFormation owns the Data Engineering S3 bucket, function, trigger,
   IAM policies, log group, and outputs.
 - IAM roles should follow least privilege; no credentials belong in source.
-- CloudFront OAC, application security, and application monitoring require team
-  source or screenshots before being marked complete.
-
-<!-- TODO: Team evidence - final overall architecture approved by all roles -->
+- CloudFront, application Lambda, DynamoDB, Personalize, and CloudWatch evidence
+  is documented on the corresponding Workshop pages.

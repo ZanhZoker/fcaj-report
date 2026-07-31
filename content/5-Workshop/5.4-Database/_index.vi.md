@@ -24,8 +24,10 @@ pipeline lưu input và artifact batch được sinh ra.
 | `Reviews` | Đánh giá sản phẩm |
 | `Orders` | Order header và line data |
 
-Tên bảng lấy từ proposal. Partition/sort key, index, capacity mode, retention và
-trạng thái deploy chính xác cần source hoặc ảnh từ thành viên phụ trách.
+Ảnh console do thành viên nhóm cung cấp xác nhận tám bảng DynamoDB đang hoạt
+động ở chế độ on-demand và thể hiện cấu trúc khóa chính.
+
+![Các bảng DynamoDB đang hoạt động và cấu trúc khóa](/images/5-Workshop/team/dynamodb-tables.png)
 
 #### Tích hợp với Data Engineering
 
@@ -42,4 +44,5 @@ tính sẵn sàng của live database.
 - Ghi rõ owner, format, cadence và retention của export.
 - Dùng dữ liệu đã che hoặc synthetic trong ảnh.
 
-<!-- TODO: Team evidence - DynamoDB tables and sanitized sample items -->
+Báo cáo không công khai item hoặc dữ liệu khách hàng; ảnh ở mức danh sách bảng
+ghi nhận mô hình dữ liệu đã triển khai mà không làm lộ dữ liệu ứng dụng.

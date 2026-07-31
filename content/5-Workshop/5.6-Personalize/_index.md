@@ -45,6 +45,13 @@ material. They are not Data Engineering metrics and are not attributed to Trần
 Uy Danh. The quality pipeline is evaluated with row counts, rejection reasons,
 duplicate counts, invalid product IDs, ID preservation, and automated tests.
 
+![Active Amazon Personalize dataset group](/images/5-Workshop/team/personalize-dataset-group.png)
+
+![Amazon Personalize solution-version metrics](/images/5-Workshop/team/personalize-solution-metrics.png)
+
+*Team-supplied captures confirm the active dataset group, trained solution
+version, and its evaluation metrics.*
+
 #### Application integration checks
 
 - Different eligible users should be tested for appropriate ranked responses.
@@ -54,7 +61,5 @@ duplicate counts, invalid product IDs, ID preservation, and automated tests.
 - The frontend must distinguish live recommendations from its current static
   product slice.
 
-<!-- TODO: Team evidence - Personalize dataset import -->
-<!-- TODO: Team evidence - solution and solution version -->
-<!-- TODO: Team evidence - campaign and recommendation response -->
-<!-- TODO: Team evidence - ML evaluation metrics -->
+The captures do not by themselves prove the backend-to-frontend recommendation
+response; that boundary remains documented as an integration check.

@@ -26,17 +26,15 @@ visual search extend discovery beyond direct text queries.
 | Area | Role in the project | Current evidence |
 |---|---|---|
 | Frontend | Commerce screens and browser flows | React/Vite source; browser-local mock data |
-| Cloud delivery | S3 origin and CloudFront HTTPS distribution | Proposal; screenshots pending |
-| Backend | API Gateway and application Lambda | Proposal; source/screenshots pending |
-| Application database | DynamoDB application tables | Proposal; source/screenshots pending |
+| Cloud delivery | S3 origin and CloudFront HTTPS distribution | CloudFront and S3 captures supplied by the team |
+| Backend | API Gateway and application Lambda | Application Lambda captured; API source is not in the reviewed repositories |
+| Application database | DynamoDB application tables | Active DynamoDB tables and key layout captured |
 | Data Engineering | Validate and hand off interactions | Source, tests, reports, SAM template |
-| Machine Learning | Personalize training/evaluation/campaign | Proposal and blogs; direct evidence pending |
-| Visual search | CLIP embeddings and similarity | Proposal; implementation evidence pending |
+| Machine Learning | Personalize training/evaluation/campaign | Dataset group and solution metrics supplied by the team |
+| Visual search | CLIP embeddings and similarity | Proposal scope; no implementation result is claimed |
 
 #### Personal role
 
 I am responsible for the Data Engineering pipeline, not the whole platform. My
 work begins with the application/database export and ends with the clean dataset
 and quality-report handoff to the ML member/team.
-
-<!-- TODO: Team evidence - project overview and deployed experience -->

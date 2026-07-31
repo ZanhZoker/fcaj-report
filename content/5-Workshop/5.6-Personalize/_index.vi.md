@@ -44,6 +44,13 @@ dataset. Đây là kết quả đánh giá ML trong tài liệu nhóm, không ph
 Engineering và không được gán cho Trần Uy Danh. Pipeline chất lượng được đánh giá
 bằng row count, rejection reason, duplicate, product ID sai, bảo toàn ID và test.
 
+![Amazon Personalize dataset group đang hoạt động](/images/5-Workshop/team/personalize-dataset-group.png)
+
+![Metric của Amazon Personalize solution version](/images/5-Workshop/team/personalize-solution-metrics.png)
+
+*Ảnh do nhóm cung cấp xác nhận dataset group, solution version đã train và các
+metric đánh giá tương ứng.*
+
 #### Kiểm tra tích hợp ứng dụng
 
 - Test nhiều user đủ điều kiện với ranked response phù hợp.
@@ -52,7 +59,5 @@ bằng row count, rejection reason, duplicate, product ID sai, bảo toàn ID v�
 - Có fallback không cá nhân hóa cho anonymous user.
 - Frontend phân biệt live recommendation với product slice tĩnh hiện tại.
 
-<!-- TODO: Team evidence - Personalize dataset import -->
-<!-- TODO: Team evidence - solution and solution version -->
-<!-- TODO: Team evidence - campaign and recommendation response -->
-<!-- TODO: Team evidence - ML evaluation metrics -->
+Các ảnh này chưa đủ để chứng minh response recommendation chạy xuyên suốt từ
+backend tới frontend; ranh giới đó được giữ như một bước kiểm tra tích hợp.

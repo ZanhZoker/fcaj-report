@@ -27,8 +27,8 @@ chapter: false
 Báo cáo trình bày hệ thống thương mại điện tử tích hợp gợi ý sản phẩm trên AWS
 do nhóm thực hiện. Kiến trúc mục tiêu kết nối giao diện React/Vite với các thành
 phần ứng dụng serverless, cơ sở dữ liệu và Machine Learning; từng phần trong báo
-cáo phân biệt rõ nội dung đã được source xác nhận, nội dung ở mức đề xuất và minh
-chứng nhóm còn cần bổ sung.
+cáo phân biệt rõ nội dung đã được source xác nhận, ảnh triển khai do nhóm cung
+cấp và nội dung ở mức đề xuất.
 
 Trong dự án, tôi phụ trách xây dựng pipeline Data Engineering để kiểm tra, chuẩn
 hóa và bàn giao dữ liệu tương tác cho giai đoạn Machine Learning. Pipeline đọc

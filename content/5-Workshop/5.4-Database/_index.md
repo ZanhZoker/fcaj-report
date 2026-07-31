@@ -11,7 +11,7 @@ The proposal defines DynamoDB as the application database. This database is not
 the Data Engineering S3 storage layout: DynamoDB serves commerce transactions,
 while the pipeline bucket stores incoming and generated batch artifacts.
 
-#### Proposed application tables
+#### Deployed application tables
 
 | Table | Intended data |
 |---|---|
@@ -24,9 +24,10 @@ while the pipeline bucket stores incoming and generated batch artifacts.
 | `Reviews` | Product reviews |
 | `Orders` | Order header and line data |
 
-These names come from the proposal. Exact partition/sort keys, indexes,
-capacity mode, retention, and deployed status require the responsible member's
-source or screenshots.
+The supplied console capture confirms eight active on-demand DynamoDB tables
+and shows their primary-key layout.
+
+![Active DynamoDB tables and key layout](/images/5-Workshop/team/dynamodb-tables.png)
 
 #### Integration with Data Engineering
 
@@ -43,4 +44,5 @@ or live database availability.
 - Document export ownership, format, cadence, and retention.
 - Use masked or synthetic data in screenshots.
 
-<!-- TODO: Team evidence - DynamoDB tables and sanitized sample items -->
+The report does not publish table items or customer records; the table-level
+view documents the deployed data model without exposing application data.

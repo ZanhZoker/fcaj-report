@@ -38,7 +38,5 @@ hugo version
 Không đưa access key, secret key, session token, mật khẩu hoặc MFA thật vào lệnh,
 ảnh chụp, source hay báo cáo.
 
-{{% notice warning %}}
-Trước khi tạo cloud resource, xác nhận đúng tài khoản AWS, Region, profile, chi
-phí dự kiến và người chịu trách nhiệm cleanup.
-{{% /notice %}}
+**An toàn cloud:** Trước khi tạo tài nguyên, xác nhận đúng tài khoản AWS, Region,
+profile, chi phí dự kiến và người chịu trách nhiệm cleanup.

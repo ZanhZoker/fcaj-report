@@ -7,7 +7,7 @@ pre: " <b> 5.2 </b> "
 
 # Kiến trúc tổng thể
 
-![Kiến trúc tổng thể của nhóm](/images/5-Workshop/architecture.png)
+![Kiến trúc tổng thể của nhóm](/images/5-Workshop/team-architecture-2026.jpg)
 
 Sơ đồ thể hiện kiến trúc mục tiêu của nhóm. Cần đọc cùng ma trận bằng chứng bên
 dưới; một biểu tượng kiến trúc không tự chứng minh resource đã được deploy.
@@ -38,5 +38,3 @@ dưới; một biểu tượng kiến trúc không tự chứng minh resource đ
 - IAM role phải theo quyền tối thiểu; source không chứa credential.
 - CloudFront OAC, bảo mật ứng dụng và monitoring ứng dụng cần source/ảnh từ nhóm
   trước khi đánh dấu hoàn thành.
-
-<!-- TODO: Team evidence - final overall architecture approved by all roles -->

@@ -35,5 +35,3 @@ leaving chargeable or publicly exposed resources behind.
 #### Next steps
 
 Submit only after the checklist, build, privacy review, and cleanup are complete.
-
-<!-- TODO: Add verified event information and final submission evidence -->

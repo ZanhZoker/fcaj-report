@@ -22,6 +22,16 @@ notifications, and administration.
 These details make the frontend useful as a UI prototype, but they must not be
 described as live backend or Personalize integration.
 
+![Catalogue and flash-sale interface](/images/5-Workshop/frontend/catalog.png)
+
+*The team frontend demonstrates catalogue navigation, product cards, pricing,
+ratings, and availability states.*
+
+![Product detail interface](/images/5-Workshop/frontend/product-detail.png)
+
+*The product-detail route demonstrates quantity selection and cart/purchase
+actions in the UI prototype.*
+
 #### Target AWS delivery
 
 The proposal places the Vite `dist/` output in a private S3 bucket and uses
@@ -36,9 +46,10 @@ aws s3 sync .\dist "s3://<FRONTEND_BUCKET>/" --delete
 aws cloudfront create-invalidation --distribution-id <DISTRIBUTION_ID> --paths "/*"
 ```
 
-The commands are a deployment procedure, not proof that the target resources
-exist. Replace placeholders only after the responsible team member confirms the
-actual resource names.
+The commands describe the repeatable deployment procedure. The supplied team
+capture below confirms one enabled CloudFront distribution for the frontend.
+
+![Enabled CloudFront distribution for the team frontend](/images/5-Workshop/team/cloudfront-distribution.png)
 
 #### Verification
 
@@ -48,6 +59,5 @@ actual resource names.
 - Confirm the S3 origin is not public if OAC is used.
 - Confirm browser requests use the intended API only after integration exists.
 
-<!-- TODO: Team evidence - deployed CloudFront website -->
-<!-- TODO: Team evidence - homepage and product browsing -->
-<!-- TODO: Team evidence - recommendation section -->
+The screenshots verify the user interface and CloudFront resource. Live API and
+Personalize responses are evaluated separately on the integration page.

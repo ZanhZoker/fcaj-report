@@ -50,7 +50,3 @@ Khối recommendation trên frontend
 Phía Data Engineering của handoff đã có source và report local xác nhận. Frontend
 hiện có là prototype mock data. ML import, application API, live product lookup
 và browser response vẫn cần source hoặc bằng chứng triển khai từ nhóm.
-
-<!-- TODO: Team evidence - end-to-end data handoff record -->
-<!-- TODO: Team evidence - backend recommendation response -->
-<!-- TODO: Team evidence - frontend live recommendation rendering -->

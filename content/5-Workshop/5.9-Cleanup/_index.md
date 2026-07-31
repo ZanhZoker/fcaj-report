@@ -5,9 +5,10 @@ chapter: false
 pre: " <b> 5.13 </b> "
 ---
 
-{{% notice warning %}}
-Deletion is irreversible. Before running any command, confirm the AWS account, region, stack name, bucket name, and retained evidence. Replace every placeholder with a value verified in the console; never run a destructive command against a guessed resource.
-{{% /notice %}}
+**Deletion safety:** Deletion is irreversible. Before running any command,
+confirm the AWS account, Region, stack name, bucket name, and retained evidence.
+Use only values verified in the console; never run a destructive command against
+a guessed resource.
 
 #### Data Engineering stack
 
@@ -32,7 +33,3 @@ The responsible team members should inventory and remove only resources actually
 7. Check the region's resource inventory and billing view for remaining chargeable resources.
 
 This is a procedure, not a statement that cleanup has already occurred.
-
-<!-- TODO: Team evidence - resource inventory before cleanup -->
-<!-- TODO: Team evidence - resource inventory after cleanup -->
-<!-- TODO: Personal evidence - SAM stack deletion or confirmed retained environment -->

@@ -34,5 +34,3 @@ Rà soát cuối phải phân biệt rõ việc đã hoàn thành với kế ho�
 #### Bước tiếp theo
 
 Chỉ nộp sau khi hoàn thành checklist, build, rà soát riêng tư và cleanup.
-
-<!-- TODO: Bổ sung thông tin Event đã xác minh và minh chứng nộp bài -->
