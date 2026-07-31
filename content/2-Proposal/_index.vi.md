@@ -85,7 +85,7 @@ Database export ZIP → S3 incoming/ → data-processing Lambda
 |---|---|---|
 | React, Vite, Redux Toolkit | Trải nghiệm web của nhóm | Có trong source frontend |
 | Mock API và local storage | Lớp dữ liệu prototype hiện tại | Có trong source frontend |
-| S3 và CloudFront | Static hosting và HTTPS mục tiêu | Có ảnh triển khai CloudFront và S3 của nhóm trong Workshop 5.4 |
+| S3 và CloudFront | Static hosting và HTTPS mục tiêu | Có ảnh CloudFront enabled; cấu hình S3 origin private cần được kiểm tra |
 | API Gateway và application Lambda | API serverless và nghiệp vụ mục tiêu | Có ảnh Application Lambda; source triển khai không nằm trong các repository đã rà soát |
 | DynamoDB | Kho dữ liệu ứng dụng mục tiêu | Có ảnh tám bảng active on-demand và key layout; source triển khai không nằm trong các repository đã rà soát |
 | S3 và data-processing Lambda | Input/output và compute cho pipeline | Có trong source Data Engineering |

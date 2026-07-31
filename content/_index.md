@@ -6,6 +6,8 @@ chapter: false
 
 # Internship Report
 
+![Portrait of Trần Uy Danh](/images/avatar-tran-uy-danh.jpg)
+
 ### Student Information
 
 &emsp; **Full name:** Trần Uy Danh
@@ -16,7 +18,7 @@ chapter: false
 
 &emsp; **Internship organisation:** AWS-FCAJ
 
-&emsp; **Internship position:** Data Engineering
+&emsp; **Internship position:** Data Engineering Intern
 
 &emsp; **Internship period:** 15 June 2026 - 14 August 2026
 
@@ -38,6 +40,11 @@ normalises `interactions.csv`, checks product identifiers against
 `interactions_clean.csv` plus quality reports to the Machine Learning stage.
 Frontend, backend, application database, recommendation training, and visual
 search remain team components rather than my individual work.
+
+The report follows the work chronologically through the Worklog, documents the
+team proposal, records technical writing and events, and then presents a
+step-by-step Workshop. The Workshop links each layer to its evidence and keeps
+unverified deployment claims clearly separated from source-confirmed behaviour.
 
 ### Report Contents
 

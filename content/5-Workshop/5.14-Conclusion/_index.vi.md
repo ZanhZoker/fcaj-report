@@ -1,5 +1,6 @@
 ---
 title: "Kết luận và đóng góp của nhóm"
+draft: true
 weight: 14
 chapter: false
 pre: " <b> 5.14 </b> "

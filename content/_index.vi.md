@@ -6,6 +6,8 @@ chapter: false
 
 # Báo cáo thực tập
 
+![Ảnh chân dung Trần Uy Danh](/images/avatar-tran-uy-danh.jpg)
+
 ### Thông tin sinh viên
 
 &emsp; **Họ và tên:** Trần Uy Danh
@@ -16,7 +18,7 @@ chapter: false
 
 &emsp; **Đơn vị thực tập:** AWS-FCAJ
 
-&emsp; **Vị trí thực tập:** Data Engineering
+&emsp; **Vị trí thực tập:** Thực tập sinh Data Engineering
 
 &emsp; **Thời gian thực tập:** 15/06/2026 - 14/08/2026
 
@@ -37,6 +39,11 @@ file export ZIP, xử lý `interactions.csv`, đối chiếu mã sản phẩm v�
 `interactions_clean.csv` cùng báo cáo chất lượng. Frontend, backend, cơ sở dữ
 liệu ứng dụng, huấn luyện recommendation và visual search là các thành phần của
 project nhóm, không phải toàn bộ công việc cá nhân của tôi.
+
+Báo cáo đi từ Worklog theo tiến độ, Proposal của nhóm, các bài viết và sự kiện,
+sau đó trình bày Workshop theo từng bước. Mỗi lớp trong Workshop được liên kết
+với nguồn hoặc ảnh minh chứng tương ứng; các quy trình chưa có bằng chứng triển
+khai được mô tả như bước kiểm tra, không được trình bày như kết quả đã hoàn tất.
 
 ### Nội dung báo cáo
 

@@ -1,5 +1,6 @@
 ---
 title: "Tối ưu chi phí"
+draft: true
 weight: 12
 chapter: false
 pre: " <b> 5.12 </b> "

@@ -87,7 +87,7 @@ Database export ZIP → S3 incoming/ → data-processing Lambda
 |---|---|---|
 | React, Vite, Redux Toolkit | Team web experience | Confirmed in frontend source |
 | Browser mock API and local storage | Current prototype data layer | Confirmed in frontend source |
-| S3 and CloudFront | Static hosting and HTTPS delivery | Team deployment evidenced by the CloudFront and S3 captures in Workshop 5.4 |
+| S3 and CloudFront | Static hosting and HTTPS delivery | Enabled CloudFront distribution captured; the private S3 origin configuration must be inspected |
 | API Gateway and application Lambda | Target serverless API and business logic | Application Lambda capture supplied; implementation source is not in the reviewed repositories |
 | DynamoDB | Target application data store | Eight active on-demand tables and key layouts captured; implementation source is not in the reviewed repositories |
 | S3 and data-processing Lambda | Interaction pipeline input/output and compute | Confirmed in Data Engineering source |
@@ -240,10 +240,10 @@ event filtering, multi-record Lambda events, and ID preservation.
 
 The supplied blog/proposal records Precision, NDCG, MRR, and Coverage for two
 Personalize datasets. Those are recommendation-model metrics belonging to the
-team's ML work; they are not metrics for my Data Engineering pipeline. Direct
-Personalize screenshots/source are still required before treating them as
-deployment evidence. Frontend, API, checkout, recommendation, and full
-integration testing also remain team-level evidence items.
+team's ML work; they are not metrics for my Data Engineering pipeline. The
+supplied dataset-group and solution-metric captures confirm those specific
+Personalize resources. They do not, by themselves, prove a live campaign or the
+frontend-to-recommendation integration path.
 
 ## 14. Budget Estimation
 

@@ -1,60 +1,180 @@
 ---
-title: "Testing and Validation"
+title: "End-to-End Testing"
 weight: 10
 chapter: false
 pre: " <b> 5.10 </b> "
 ---
 
-# Testing and Validation
+# End-to-End Testing
 
-Testing is divided by ownership so verified Data Engineering results are not
-mistaken for unverified whole-system results.
+A component working in isolation does not prove that the system works as a
+whole. End-to-end verification must follow the same identifiers and expected
+result from the browser, frontend, API and DynamoDB through the Data Engineering
+handoff and recommendation response. A screenshot of one AWS page is supporting
+evidence for that component only.
 
-## Team-level testing
+## Objective and prerequisites
 
-| Area | Required test | Current status |
-|---|---|---|
-| Frontend | Build, routing, catalogue, search, cart, checkout, account | Source and interface captures available |
-| Backend/API | Auth, validation, product/cart/order routes, CORS, errors | Lambda resource confirmed; route/response checks remain team-owned |
-| Database | Keys, access patterns, ownership, order consistency | Active tables and key layout captured |
-| Recommendation | Import, model metrics, user variation, rank preservation | Dataset group and solution metrics captured |
-| Visual search | Image input, embedding/cache, similarity result | Proposal scope; no implementation result is claimed |
-| Integration | Export → clean data → ML → API → frontend | Component boundaries documented; no full-path result is claimed |
+Use a verified AWS profile in **ap-southeast-1**, the approved CloudFront and API
+URLs, two non-sensitive test users, a known product ID, a controlled interaction
+export, and access to CloudWatch logs. Record timestamps so observations across
+services can be correlated.
 
-Do not mark the row complete from a screenshot of only one component. A valid
-integration result must identify the input, expected output, actual output, and
-the same identifier across each boundary.
+## Step 1. Verify Infrastructure Layers
 
-## Data Engineering testing
-
-The repository reports **48 tests passed**. Verified behaviours include:
-
-- safe handling of invalid ZIPs, path traversal, size and member limits;
-- missing/ambiguous required files and duplicate product IDs;
-- required columns, UTF-8 BOM, and header normalization;
-- missing values, invalid event types and timestamps;
-- unknown product IDs and exact duplicates;
-- preservation of case, hyphens, leading zeros, and source IDs;
-- deterministic local run IDs and clean output;
-- S3 prefix/suffix filtering, URL-decoded keys, and multi-record Lambda events;
-- run-scoped and `latest/` output publication.
+Run read-only inventory commands first:
 
 ```powershell
-python -m pytest -q
-python -m app.cli --input .\export.zip --output .\output
+aws sts get-caller-identity --profile <AWS-PROFILE>
+aws cloudfront list-distributions --profile <AWS-PROFILE>
+aws apigatewayv2 get-apis --region ap-southeast-1 --profile <AWS-PROFILE>
+aws lambda get-function-configuration --function-name fcj-api --region ap-southeast-1 --profile <AWS-PROFILE>
+aws dynamodb list-tables --region ap-southeast-1 --profile <AWS-PROFILE>
+aws personalize list-dataset-groups --region ap-southeast-1 --profile <AWS-PROFILE>
 ```
 
-The current quality report reconciles 23,377 input rows to 23,377 clean rows,
-with zero rejected and duplicate rows. A zero-rejection result for this input
-does not remove the rejected-data path; tests exercise the failure cases.
+Verify each layer without assuming that its existence proves integration:
 
-## Output verification
+| Layer | Verification |
+|---|---|
+| CloudFront | Distribution enabled; HTTPS domain loads the current frontend build |
+| Frontend S3 | Private origin contains `index.html` and current hashed assets |
+| API Gateway | Approved stage and routes integrate with the application Lambda |
+| Application Lambda | Runtime configuration, role and log group match owning source |
+| DynamoDB | Documented tables are ACTIVE and key schemas match the team capture |
+| Data S3 and processing Lambda | Input/output boundary is available as documented by Data Engineering |
+| CloudWatch | Application and processing log groups can be inspected |
+| Amazon Personalize | Dataset group and intended solution version are ACTIVE |
 
-1. Compare input, clean, rejected, and duplicate counts.
-2. Confirm generated user/item ID counts are zero.
-3. Confirm the clean header and sample source ID shapes.
-4. Inspect rejection reasons with a controlled invalid test archive.
-5. On AWS, match S3 artifacts and the CloudWatch run summary by run ID.
-6. If Athena is used, reconcile its counts with the JSON report.
+Stop if the AWS account or Region is wrong. Do not substitute guessed resource
+IDs, URLs or ARNs.
 
-![Automated tests and local output verification](/images/5-Workshop/data-engineering/local-run-and-tests.png)
+## Step 2. Verify the Data Engineering Handoff
+
+The detailed implementation, commands and evidence remain in the unchanged
+[Data Engineering Pipeline](../5.7-DataEngineering/). This end-to-end test uses
+that component as a contract rather than rewriting it.
+
+For one controlled export:
+
+1. Upload the export ZIP to the verified incoming location.
+2. Confirm the processing Lambda is invoked by the S3 event.
+3. Match the CloudWatch run identifier to the uploaded object.
+4. Confirm `interactions_clean.csv` and the quality report are created.
+5. Compare input, clean, rejected and duplicate counts.
+6. Confirm original `USER_ID` and `ITEM_ID` values are preserved.
+7. Confirm every clean item ID exists in `Products.json` and the application catalogue.
+8. Hand the approved clean file and report to the ML owner.
+
+Do not mark the handoff complete from an S3 object alone; the counts, identifier
+checks and report must belong to the same run.
+
+## Step 3. Verify Recommendations
+
+Use two valid users with different histories. Invoke the team-approved runtime
+route or Personalize test surface and record only non-sensitive IDs.
+
+```powershell
+curl "<API-URL>/<RECOMMENDATION-ROUTE>?userId=<TEST-USER-ID>"
+```
+
+Check that:
+
+- the response is successful and has the documented JSON shape;
+- two users can receive different ranked results when sufficient history exists;
+- every returned item ID exists in **Products**;
+- duplicate or unknown IDs are handled explicitly;
+- the backend preserves the order returned by Personalize;
+- the frontend renders the same order.
+
+The supplied dataset-group and model-metric captures prove training resources,
+not a live campaign or successful runtime call. Runtime recommendation remains
+**Not documented** until the responsible team member records the response.
+
+## Step 4. Verify the Browser Workflow
+
+Use a new test session and record the browser Network panel alongside application
+logs. The reviewed frontend source supports the following screens, but its mock
+service must be replaced or disabled before claiming cloud API integration.
+
+1. Open the verified CloudFront website over HTTPS.
+2. Register a test account or log in with a non-sensitive test user.
+3. Browse the catalogue and use category/search filters.
+4. Open a product-detail route directly and from a product card.
+5. Add the product to the cart and change quantity.
+6. Apply a valid voucher if the deployed API implements vouchers.
+7. Complete checkout or place a controlled order.
+8. Open account/order history and find the new order.
+9. Return to the home page.
+10. Open the personalised recommendation section.
+11. Open Developer Tools → Network.
+12. Confirm requests use the approved API origin, status codes and response order.
+
+![Catalogue used in the browser workflow](/images/5-Workshop/frontend/catalog.png)
+
+*The catalogue screen is available in the team frontend; the Network panel must
+still prove whether it is using the deployed API or the local mock service.*
+
+![Product-detail route used in the browser workflow](/images/5-Workshop/frontend/product-detail.png)
+
+*Use a known product ID to trace the browser route, API response, database item
+and recommendation result.*
+
+## Step 5. Verify Data Consistency
+
+Choose one test user, product and order, then follow the same identifiers across
+each boundary:
+
+| Consistency check | Expected result |
+|---|---|
+| Product ID | Same value in DynamoDB, `Products.json`, interactions and Personalize output |
+| User ID | Same application value in the interaction dataset and recommendation request |
+| Recommendation rank | API and frontend preserve Personalize order |
+| Price | Backend re-reads product price and calculates line/order totals |
+| Voucher | Backend validates active state and expiry before discount |
+| Order | Stored under the authenticated user and visible in order history |
+| Data Engineering | Does not replace original application IDs |
+
+If the frontend mock database is still active, stop the cloud consistency claim:
+local-storage IDs are prototype data and do not prove DynamoDB or Personalize integration.
+
+## Step 6. Failure Scenarios
+
+| Scenario | Expected behaviour | Where to investigate |
+|---|---|---|
+| API unavailable | Frontend shows a controlled error or retry state | Browser Network, API Gateway and Lambda logs |
+| CORS failure | Preflight is rejected clearly; production origin policy is corrected | Browser console and API CORS config |
+| Stale CloudFront cache | Invalidation exposes the new build | Distribution invalidations and asset hashes |
+| React route returns 403/404 | SPA fallback returns `index.html` | CloudFront custom errors and S3 origin |
+| Malformed ZIP | Processing fails safely with a clear run error | Processing Lambda logs and report boundary |
+| Missing `interactions.csv` | Run fails without publishing a misleading clean dataset | Data Engineering logs |
+| Unknown `ITEM_ID` | Row is rejected and counted | Quality report |
+| Lambda timeout | Invocation fails visibly; duration approaches timeout | CloudWatch duration/error metrics |
+| Personalize campaign not ACTIVE | API returns a controlled fallback | Application logs and Personalize status |
+
+## Final End-to-End Checklist
+
+| Item | Expected result | Status or evidence |
+|---|---|---|
+| CloudFront loads | HTTPS page returns the current build | Distribution capture available; live response not documented |
+| Frontend assets | JavaScript, CSS and images load without errors | Interface captures and `dist/` source available |
+| Product API | Valid product JSON for a known ID | Not documented |
+| Authentication | Valid login succeeds; invalid session is rejected | Prototype source only; cloud result not documented |
+| Cart | Add, update and remove persist for the user | Prototype source only; cloud result not documented |
+| Checkout | Server calculates and stores a controlled order | Lambda code capture; full runtime result not documented |
+| Order history | New order appears for the same user | Not documented |
+| Data Engineering trigger | Controlled upload invokes processing | Documented in the Data Engineering page |
+| Clean dataset | Clean output and quality report belong to the same run | Documented in the Data Engineering page |
+| ID preservation | Original user/item IDs remain unchanged | Documented in the Data Engineering page |
+| Personalize recommendation | Runtime returns ranked IDs | Training evidence available; runtime not documented |
+| Recommendation order | API and frontend preserve model order | Not documented |
+| CloudWatch logs | Requests/runs can be correlated without secrets | Component evidence available; full correlation not documented |
+
+## Result and team conclusion
+
+The available evidence supports the React/Vite prototype, deployed component
+captures, Data Engineering handoff, Personalize training resources and monitoring
+alarms. It does not yet prove one successful browser-to-recommendation run. The
+team should complete the **Not documented** rows with one timestamped test run
+before presenting the project as fully integrated. Trần Uy Danh's verified role
+remains the Data Engineering boundary within that wider team system.

@@ -1,37 +1,104 @@
 ---
-title: "Giám sát, IAM và bảo mật"
-weight: 11
+title: "Monitoring và Alerting"
+weight: 9
 chapter: false
-pre: " <b> 5.11 </b> "
+pre: " <b> 5.9 </b> "
 ---
 
-Phần này tách biệt các biện pháp đã được xác nhận trong source Data Engineering với các biện pháp vẫn là mục tiêu của ứng dụng nhóm.
+# Monitoring và Alerting
 
-#### Kiểm soát Data Engineering đã được xác nhận trong source
+## Mục tiêu và vị trí trong kiến trúc
 
-- **CloudWatch Logs:** log chạy Lambda cung cấp dấu vết cho từng lần xử lý do S3 kích hoạt. SAM template tạo log group của function với thời gian lưu bảy ngày.
-- **IAM tối thiểu:** function xử lý chỉ được đọc `incoming/*` và ghi vào `processed/*`, `rejected/*`, `reports/*` trong data bucket.
-- **Lưu trữ riêng tư:** S3 bucket chặn truy cập công khai và dùng mã hóa phía máy chủ với khóa do Amazon S3 quản lý.
-- **Cấu hình:** bucket và các output prefix được truyền qua biến môi trường. Credential và secret không được lưu trong repository.
-- **Khả năng quan sát lỗi:** lỗi validation được ghi thành artifact rejected và được tổng hợp trong quality report JSON và Markdown. Ngoại lệ không dự kiến được ghi vào Lambda log.
+Monitoring phải trả lời component nào lỗi, request hoặc data run nào bị ảnh hưởng,
+thời gian xử lý bao lâu và lỗi đơn lẻ hay lặp lại. Application Lambda và Data
+Engineering Lambda là hai function riêng, cần log group và ownership riêng khi điều tra.
 
-Repository Data Engineering không định nghĩa alarm hoặc SNS notification. Tách
-biệt với pipeline, ảnh do nhóm cung cấp xác nhận CloudWatch alarm cho lỗi và độ
-trễ của Lambda ứng dụng.
+## Bước 1. Xác định application logs
 
-![CloudWatch alarm cho lỗi và độ trễ ứng dụng](/images/5-Workshop/team/cloudwatch-alarms.png)
+Kiểm tra log group của Application Lambda và stream gần nhất bằng profile đã duyệt:
 
-#### Mục tiêu bảo mật cho ứng dụng nhóm
+```powershell
+aws logs describe-log-groups `
+  --log-group-name-prefix /aws/lambda/fcj-api `
+  --region ap-southeast-1 `
+  --profile <AWS-PROFILE>
+```
 
-Proposal hướng đến HTTPS qua CloudFront, S3 origin riêng tư với Origin Access Control, API có xác thực, quyền Lambda giới hạn và dữ liệu ứng dụng được bảo vệ. Source frontend hiện tại là prototype chạy trên trình duyệt, dùng dữ liệu mock và local storage; vì vậy đây không phải bằng chứng cho xác thực production, password hashing, OAC đã triển khai hoặc giám sát backend.
+Application log nên có request ID, route/method, status, duration và error code an
+toàn. Không log password, authorization token, session value hoặc customer payload đầy đủ.
 
-Trước khi phát hành production, nhóm cần xác minh phân quyền request, kiểm tra input, password hashing, quản lý secret, che dữ liệu nhạy cảm trong log, CORS, quyền tối thiểu và thời gian lưu log trên toàn bộ application stack.
+## Bước 2. Xác định Data Engineering logs
 
-![Sự kiện thực thi Lambda Data Engineering](/images/5-Workshop/data-engineering/cloudwatch-log-events.png)
+Processing Lambda ghi count/status theo data run như trang
+[Pipeline Data Engineering](../5.7-DataEngineering/) mô tả. Dùng log đó để nối
+input object, output artifact và quality report mà không thay đổi trang pipeline
+hoặc ảnh minh chứng của trang đó.
 
-Ảnh ghi nhận một lần Lambda chạy thành công. Summary chi tiết được trình bày ở
-phần Data Engineering sau khi loại bỏ định danh cấp tài khoản.
+## Bước 3. Theo dõi Lambda metrics
 
-#### Checklist minh chứng
+Với cả hai function, kiểm tra tối thiểu:
 
-Ảnh chụp phải che credential, session token, account ID đầy đủ, dữ liệu cá nhân và thông tin billing không liên quan. Ảnh console chỉ được xem là minh chứng khi có thể xác minh tên tài nguyên, region và mối liên hệ với project này.
+| Metric | Ý nghĩa | Tín hiệu điều tra |
+|---|---|---|
+| Invocations | Xác nhận traffic hoặc event delivery | Request/upload dự kiến nhưng không invoke |
+| Errors | Phát hiện handler thất bại | Error count khác 0 kéo dài |
+| Duration | Cho biết latency và nguy cơ timeout | Tiệm cận timeout hoặc tăng mạnh |
+| Throttles | Phát hiện concurrency limit | Có throttle trong traffic dự kiến |
+| Concurrent executions | Giải thích burst và tranh chấp | Saturation bất thường |
+
+Khi các component active, cần đối chiếu thêm API Gateway 4xx/5xx, CloudFront error,
+DynamoDB throttling và Personalize runtime error.
+
+## Bước 4. Truy lỗi có cấu trúc
+
+Bắt đầu từ triệu chứng phía user, ghi timestamp rồi lần theo CloudFront, API
+Gateway, Application Lambda và downstream service. Với data run, lần theo S3
+object event tới processing Lambda và output report. Dùng ID/timestamp thay vì
+copy payload nhạy cảm vào báo cáo.
+
+## Bước 5. Xác minh alarm
+
+![CloudWatch alarm do nhóm cung cấp](/images/5-Workshop/team/cloudwatch-alarms.png)
+
+*Minh chứng nhóm: có alarm latency và error cho Application Lambda với action
+enabled. Ảnh không cho biết notification destination nên báo cáo không khẳng định SNS topic.*
+
+Kiểm tra period, statistic, threshold, missing-data treatment và action target.
+Alarm mới tạo có thể ở **Insufficient data** cho tới khi đủ metric period.
+
+## Bước 6. Đặt retention và kiểm soát chi phí
+
+Retention phải đủ cho demo và incident review nhưng không để vô hạn nếu không có
+lý do. Source Data Engineering định nghĩa retention hữu hạn cho function của nó;
+retention ứng dụng phải được kiểm tra trong môi trường owner. Tắt debug log dài
+trước demo công khai và không log request/response body lớn.
+
+Các kiểm soát chi phí được tích hợp tại bước này:
+
+- giới hạn CloudWatch retention;
+- cache static asset qua CloudFront;
+- DynamoDB on-demand cho demo traffic không đều;
+- chỉ right-size Lambda memory sau khi có duration evidence;
+- quản lý vòng đời Personalize campaign vì campaign idle có thể chiếm phần lớn chi phí.
+
+## Lỗi thường gặp
+
+- Xem sai Region hoặc log group.
+- Alarm dùng sai statistic/evaluation period.
+- Handler nuốt lỗi và chỉ log response 200 chung chung.
+- Log chứa token, dữ liệu cá nhân hoặc record đầy đủ.
+- Personalize campaign còn active dù không có lịch test.
+
+## Kiểm tra
+
+| Hạng mục | Kết quả mong đợi | Trạng thái bằng chứng |
+|---|---|---|
+| Application log group | Request gần nhất có structured log an toàn | Cần kiểm tra |
+| Processing log group | Run summary khớp artifact | Được Data Engineering ghi nhận |
+| Errors/duration/throttles | Có dashboard hoặc CLI view | Đã mô tả quy trình |
+| Alarms | Có error và latency alarm | Có ảnh cung cấp |
+| Notification action | Destination và recipient được xác nhận | Chưa có tài liệu |
+| Retention | Có giá trị rõ cho từng log group project | Data layer đã ghi nhận; application cần kiểm tra |
+
+**Đầu ra cho bước tiếp theo:** timestamp, request/run identifier, log và metric
+evidence hỗ trợ End-to-End checklist mà không lộ dữ liệu nhạy cảm.

@@ -1,63 +1,124 @@
 ---
-title: "Amazon Personalize và Recommendation"
+title: "Xây dựng Recommendation Engine"
 weight: 8
 chapter: false
 pre: " <b> 5.8 </b> "
 ---
 
-# Amazon Personalize và Recommendation
+# Xây dựng Recommendation Engine
 
-Amazon Personalize là dịch vụ recommendation downstream được đề xuất. Data
-Engineering cung cấp interaction CSV sạch bốn cột; thành viên/nhóm ML phụ trách
-schema phía service, dataset import, solution, solution version, evaluation,
-campaign và tích hợp.
+## Mục tiêu và phân công
 
-#### Input bàn giao
+Amazon Personalize chuyển interaction đã kiểm tra thành danh sách product gợi ý
+có thứ tự. Trần Uy Danh phụ trách validation dataset và clean handoff. Thành viên
+ML/nhóm phụ trách schema, import, training, solution version, campaign và đánh giá
+model. Owner backend/frontend tích hợp kết quả runtime.
 
-```csv
-USER_ID,ITEM_ID,EVENT_TYPE,TIMESTAMP
-user-133,prod-008,view,1779328979
-user-133,prod-008,add_to_cart,1779329120
-user-133,prod-008,purchase,1779329340
+Nguồn sự thật cho preprocessing vẫn là trang
+[Pipeline Data Engineering](../5.7-DataEngineering/) được giữ nguyên; trang này
+bắt đầu từ ranh giới bàn giao của pipeline.
+
+## Bước 1. Nhận clean interactions
+
+Owner ML nhận `interactions_clean.csv` và quality report tương ứng. Trước import,
+xác nhận đủ cột, bảo toàn ID nguồn, row count và mọi `ITEM_ID` đều ánh xạ được về
+catalogue sản phẩm của ứng dụng.
+
+## Bước 2. Xác nhận Personalize schema
+
+Interaction schema phải khớp kiểu dữ liệu và event vocabulary của clean file.
+Tên field và data type phân biệt chính xác. Không remap user/item ID trừ khi ứng
+dụng và downstream lookup được cập nhật nhất quán.
+
+## Bước 3. Upload dataset đã duyệt
+
+Đặt file đã duyệt vào S3 location dành cho ML đã xác minh. Giữ ranh giới bucket
+Data Engineering tách với import location của ML khi owner hoặc permission khác nhau.
+
+## Bước 4. Cấp quyền import
+
+Amazon Personalize cần IAM role và bucket policy chỉ cho phép đọc dataset path đã
+duyệt. Không công khai role ARN đầy đủ, bucket name hoặc account identifier.
+
+## Bước 5. Tạo hoặc chọn dataset group
+
+![Personalize dataset group Active do nhóm cung cấp](/images/5-Workshop/team/personalize-dataset-group.png)
+
+*Minh chứng nhóm/ML: một custom dataset group được hiển thị ở trạng thái Active.*
+
+```powershell
+aws personalize list-dataset-groups `
+  --region ap-southeast-1 `
+  --profile <AWS-PROFILE>
 ```
 
-Pipeline đảm bảo điều kiện schema/chất lượng nhưng không chọn Personalize recipe
-và không nhận model performance. `items.csv` không thuộc contract Data
-Engineering hiện tại; item dataset nếu ML cần phải được chuẩn bị và sở hữu riêng
-bởi vai trò đó.
+## Bước 6. Tạo Interactions dataset và import job
 
-#### Workflow ML thuộc thành viên/nhóm phụ trách
+Gắn schema đã review vào Interactions dataset, bắt đầu import từ S3 object đã duyệt
+và chờ job **ACTIVE**. Nếu import failed, điều tra failure reason thay vì retry với
+ID đã bị thay đổi.
 
-1. Xác nhận `USER_ID`, `ITEM_ID` khớp định danh ứng dụng.
-2. Tạo Personalize dataset group và schema.
-3. Import `interactions_clean.csv` từ S3 location đã thống nhất.
-4. Tạo và train solution version.
-5. Xem metric recommendation và so sánh baseline đã thống nhất.
-6. Chỉ tạo campaign khi cần test real-time hoặc demo.
-7. Đưa item ID đã xếp hạng qua backend và giữ nguyên thứ tự.
-8. Xóa resource tính phí khi không còn cần.
+## Bước 7. Tạo solution
 
-#### Metric và trách nhiệm
+Proposal nhóm chỉ định recipe **aws-user-personalization**. Xác nhận recipe và
+dataset group trước khi train; không suy ra campaign chỉ từ solution version Active.
 
-Blog/proposal được cung cấp có Precision@5, NDCG@10, MRR@25 và Coverage cho hai
-dataset. Đây là kết quả đánh giá ML trong tài liệu nhóm, không phải metric Data
-Engineering và không được gán cho Trần Uy Danh. Pipeline chất lượng được đánh giá
-bằng row count, rejection reason, duplicate, product ID sai, bảo toàn ID và test.
+## Bước 8. Train solution version
 
-![Amazon Personalize dataset group đang hoạt động](/images/5-Workshop/team/personalize-dataset-group.png)
+Chờ training hoàn tất và ghi nhận version dùng để đánh giá. Ảnh cung cấp cho thấy
+full training kéo dài 0,85 giờ và solution version Active.
 
-![Metric của Amazon Personalize solution version](/images/5-Workshop/team/personalize-solution-metrics.png)
+## Bước 9. Đánh giá model metrics
 
-*Ảnh do nhóm cung cấp xác nhận dataset group, solution version đã train và các
-metric đánh giá tương ứng.*
+![Personalize solution-version metrics do nhóm cung cấp](/images/5-Workshop/team/personalize-solution-metrics.png)
 
-#### Kiểm tra tích hợp ứng dụng
+*Metrics cung cấp gồm NDCG@5 0,5868; NDCG@10 0,6512; NDCG@25 0,7221;
+precision@5 0,4348; precision@10 0,2826; precision@25 0,1496; MRR@25 0,7130
+và coverage 0,9505. Đây là kết quả ML của nhóm, không phải metric Data Engineering.*
 
-- Test nhiều user đủ điều kiện với ranked response phù hợp.
-- Backend giữ nguyên thứ tự recommendation service trả về.
-- Có fallback cho product lạ hoặc không còn khả dụng.
-- Có fallback không cá nhân hóa cho anonymous user.
-- Frontend phân biệt live recommendation với product slice tĩnh hiện tại.
+## Bước 10. Chỉ tạo campaign khi cần
 
-Các ảnh này chưa đủ để chứng minh response recommendation chạy xuyên suốt từ
-backend tới frontend; ranh giới đó được giữ như một bước kiểm tra tích hợp.
+Campaign cần cho runtime dạng campaign trong proposal và có thể là nguồn chi phí
+lớn khi còn active. Báo cáo không có ảnh campaign nên không khẳng định live
+campaign. Chỉ tạo trong cửa sổ test/demo đã duyệt và ghi status mà không công khai ARN.
+
+## Bước 11. Kiểm tra recommendation runtime
+
+Dùng hai application user hợp lệ và so sánh item ID có thứ tự. Kết quả cá nhân
+hóa nên khác khi model có đủ history; mọi ID phải tồn tại trong **Products**.
+Cần CLI/console response thành công trước khi đánh dấu lớp này hoàn tất.
+
+## Bước 12. Tích hợp backend
+
+Application Lambda truyền authenticated user ID, gọi đúng Personalize resource,
+giữ thứ tự trả về, lấy product detail và dùng fallback có kiểm soát khi
+Personalize không khả dụng.
+
+## Bước 13. Render trên frontend
+
+Frontend render đúng thứ tự response, tránh duplicate, xử lý catalogue item không
+còn tồn tại và phân biệt recommendation cá nhân hóa với local related-product
+logic của prototype.
+
+## Lỗi thường gặp
+
+- Schema type khác CSV upload.
+- S3/IAM permission chặn import job.
+- Application ID và dataset ID khác format.
+- Solution version Active nhưng chưa có campaign/runtime resource.
+- Backend đổi thứ tự ID khi lấy product detail.
+- Campaign còn active sau demo và tiếp tục phát sinh chi phí.
+
+## Kiểm tra và đầu ra
+
+| Hạng mục | Kết quả mong đợi | Trạng thái bằng chứng |
+|---|---|---|
+| Data handoff | Clean file và quality report khớp nhau | Được Data Engineering ghi nhận |
+| Dataset group | Custom group Active | Có ảnh cung cấp |
+| Solution version | Active và đã đánh giá | Có ảnh cung cấp |
+| Model metrics | Ghi nhận từ version đã đánh giá | Có ảnh cung cấp |
+| Campaign/runtime | Trả ranked ID cho user hợp lệ | Chưa có tài liệu |
+| Backend/frontend | Giữ rank và resolve product | Chưa có minh chứng đầu cuối |
+
+**Đầu ra cho bước tiếp theo:** solution version đã đánh giá và, khi được tạo rõ
+ràng cho test, runtime resource có ranked ID truy vết qua API tới frontend.

@@ -1,60 +1,117 @@
 ---
-title: "Frontend và CloudFront"
+title: "Triển khai lớp Frontend"
 weight: 4
 chapter: false
 pre: " <b> 5.4 </b> "
 ---
 
-# Frontend và CloudFront
+# Triển khai lớp Frontend
 
-Repository nhóm xác nhận ứng dụng một trang React/Vite sử dụng React Router,
-Redux Toolkit và các UI component tái sử dụng. Source route bao gồm homepage,
-category, text search, product detail, cart, checkout, account, seller,
-notification và administration.
+## Mục tiêu và vị trí trong kiến trúc
 
-#### Hành vi source hiện tại
+Build ứng dụng React/Vite thành static file, đặt trong S3 origin private và phân
+phối HTTPS qua CloudFront. Frontend là component chung của nhóm; trang này mô tả
+source đã rà soát và quy trình triển khai, không nhận đây là công việc cá nhân
+của Trần Uy Danh.
 
-- Product, account, cart, voucher và order dùng mock data local.
-- Mock API mô phỏng độ trễ và lưu dữ liệu trong local storage của trình duyệt.
-- Khối recommendation ở homepage chọn một lát cắt product tĩnh.
-- Search dựa trên text; source này chưa có CLIP visual search.
+## Trạng thái được source xác nhận
 
-Vì vậy frontend là UI prototype hữu ích nhưng không được mô tả như đã tích hợp
-backend hoặc Personalize thật.
+Repository nhóm dùng React, Vite, React Router và Redux Toolkit. Route bao gồm
+home, product detail, category/search, authentication, cart, checkout, account,
+notifications, seller và admin. Source hiện gọi mock API trong trình duyệt và
+lưu dữ liệu seed bằng local storage. Không có API variable `import.meta.env` hay
+production `fetch` client trong source đã rà soát, vì vậy kết nối API thật phải
+được xác minh riêng.
 
-#### Mục tiêu phân phối trên AWS
-
-Proposal đặt output `dist/` của Vite trong bucket S3 private và dùng CloudFront
-cho HTTPS cùng caching. CloudFront Origin Access Control (OAC) là mục tiêu phù
-hợp để người dùng không truy cập thẳng bucket. Client-side route cũng cần SPA
-fallback về `index.html`.
+## Bước 1. Cài dependency và build
 
 ```powershell
-npm install
+npm i
 npm run build
-aws s3 sync .\dist "s3://<FRONTEND_BUCKET>/" --delete
-aws cloudfront create-invalidation --distribution-id <DISTRIBUTION_ID> --paths "/*"
 ```
 
-Các lệnh mô tả quy trình triển khai có thể lặp lại. Ảnh do thành viên nhóm cung
-cấp bên dưới xác nhận một CloudFront distribution đang bật cho frontend.
+Script `build` chạy `vite build`. Xác nhận `dist/index.html` và các file có hash
+trong `dist/assets/` được tạo trước khi upload.
 
-![CloudFront distribution của frontend nhóm đang hoạt động](/images/5-Workshop/team/cloudfront-distribution.png)
+## Bước 2. Chuẩn bị S3 origin
 
-#### Kiểm tra
+Tạo hoặc chọn frontend bucket đã xác minh tại **ap-southeast-1**. Giữ Block Public
+Access bật, không mở static website trực tiếp và chỉ upload nội dung trong
+`dist/`. CloudFront phải phục vụ file thay vì cho phép truy cập S3 ẩn danh.
 
-- Build frontend thành công.
-- Mở các route home, product, category, search, cart, checkout và account.
-- Kiểm tra direct SPA path qua CloudFront.
-- Xác nhận S3 origin không public nếu dùng OAC.
-- Chỉ xác nhận browser dùng API mục tiêu sau khi tích hợp tồn tại.
+```powershell
+aws s3 sync dist/ s3://<FRONTEND-BUCKET>/ --delete --profile <AWS-PROFILE>
+```
 
-![Giao diện danh mục và flash sale](/images/5-Workshop/frontend/catalog.png)
+Chỉ thay giá trị trong dấu ngoặc nhọn sau khi xác nhận đúng bucket và profile của nhóm.
 
-*Frontend nhóm thể hiện điều hướng danh mục, thẻ sản phẩm, giá, đánh giá và
-trạng thái còn hàng.*
+## Bước 3. Cấu hình CloudFront
 
-![Giao diện chi tiết sản phẩm](/images/5-Workshop/frontend/product-detail.png)
+1. Dùng S3 bucket private làm origin.
+2. Tạo hoặc gắn Origin Access Control.
+3. Chỉ áp dụng bucket policy sinh ra cho bucket đã xác minh.
+4. Đặt default root object là `index.html`.
+5. Redirect HTTP sang HTTPS.
+6. Bật compression và chọn cache policy phù hợp static asset.
 
-*Route chi tiết sản phẩm minh họa chọn số lượng cùng thao tác thêm giỏ hàng và
-mua ngay trong UI prototype.*
+![CloudFront distribution đang enabled do nhóm cung cấp](/images/5-Workshop/team/cloudfront-distribution.png)
+
+*Minh chứng nhóm: CloudFront distribution của frontend chung đang enabled. Báo
+cáo không lặp lại resource identifier.*
+
+## Bước 4. Hỗ trợ React Router
+
+Khi mở trực tiếp `/product/:id`, `/cart` hoặc `/account`, CloudFront phải trả về
+SPA entry point thay vì lỗi truy cập S3. Cấu hình custom error cho hành vi
+403/404 đã chọn để trả `/index.html` với response code thống nhất, sau đó mở trực
+tiếp một nested route để kiểm tra.
+
+## Bước 5. Kết nối API ứng dụng
+
+Source đã rà soát chưa định nghĩa environment variable cho API production. Trước
+khi tích hợp cloud, owner frontend phải xác nhận tên biến và thay mock service
+bằng API client được review. Giá trị `<API-URL>` trong Workshop chỉ là cú pháp
+tài liệu, không phải endpoint đã triển khai. API thật phải trả CORS header phù hợp.
+
+## Bước 6. Publish bản cập nhật
+
+Sau mỗi build mới, sync `dist/` rồi invalidate đúng distribution đã xác minh:
+
+```powershell
+aws cloudfront create-invalidation `
+  --distribution-id <DISTRIBUTION-ID> `
+  --paths "/*" `
+  --profile <AWS-PROFILE>
+```
+
+## Bước 7. Kiểm tra giao diện
+
+![Danh mục sản phẩm của frontend nhóm](/images/5-Workshop/frontend/catalog.png)
+
+*Màn hình catalogue từ source/report frontend của nhóm.*
+
+![Trang chi tiết sản phẩm của frontend nhóm](/images/5-Workshop/frontend/product-detail.png)
+
+*Product-detail route dùng để kiểm tra client-side routing và catalogue ID.*
+
+## Lỗi thường gặp
+
+- Cache CloudFront cũ vẫn hiển thị build trước sau khi S3 đã cập nhật.
+- Thiếu SPA fallback làm nested route trả 403/404.
+- S3 public sẽ bỏ qua ranh giới OAC mong muốn.
+- Mock API có thể làm giao diện trông hoạt động dù API triển khai chưa được chứng minh.
+- API URL sai stage hoặc Region gây lỗi network/CORS.
+
+## Kiểm tra
+
+| Hạng mục | Kết quả mong đợi |
+|---|---|
+| CloudFront domain | Mở được qua HTTPS |
+| Home và catalogue | React render, không có màn hình trắng |
+| Static assets | Không thiếu JavaScript, CSS hoặc ảnh |
+| Nested route | Mở trực tiếp và trả về SPA |
+| API configuration | Trỏ tới API nhóm đã duyệt, không dùng mock service |
+| Cache refresh | Build mới xuất hiện sau invalidation |
+
+**Đầu ra cho bước tiếp theo:** frontend HTTPS đã xác minh và build có catalogue
+identifier truy vết được qua API và database.
