@@ -5,21 +5,21 @@ chapter: false
 pre: " <b> 5.6 </b> "
 ---
 
-# Deploy the API Layer
 
 ## Objective and architecture position
 
 The API layer sits between the React frontend and DynamoDB or Amazon Personalize.
 It should validate requests, enforce authentication and ownership, calculate
-trusted order values, and return stable JSON responses. This is a team component;
-the application-backend source is not present in the reviewed frontend repository.
+trusted order values, and return stable JSON responses. This team component has
+separate ownership from Trần Uy Danh's Data Engineering work.
 
-## Evidence boundary
+## Evidence and limitations
 
-The team proposal describes an HTTP API Gateway with 22 routes and a Node.js 20
-Lambda named **fcj-api**. A supplied console capture shows application order code
-inside Lambda and the handler value **index.handler**, but the screenshot does not
-prove every route, environment variable, timeout or memory setting.
+The team proposal records an HTTP API Gateway with 22 routes and a Node.js 20
+Lambda named **fcj-api**. A supplied console capture confirms application order
+code and the handler value **index.handler**. Backend source and live configuration
+were not part of the reviewed material, so runtime details, route inventory,
+environment variables, timeout and memory remain final verification items.
 
 ![Application Lambda code supplied by the team](/images/5-Workshop/team/application-lambda.png)
 
@@ -46,8 +46,8 @@ aws lambda get-function-configuration `
 ```
 
 Confirm the runtime, handler, role, architecture, timeout, memory and environment
-variable names against the owning source. The proposal's Node.js 20 statement is
-design documentation; this report does not invent missing runtime values.
+variable names against the owning source. Record the observed values alongside
+the Node.js 20 design target before deployment.
 
 ## Step 3. Configure environment variables
 
@@ -72,9 +72,8 @@ aws apigatewayv2 get-routes `
   --profile <AWS-PROFILE>
 ```
 
-For each route, check method, path, integration, authorization and error shape.
-The 22-route count remains proposal-level until route output or backend source is
-reviewed.
+For each route, check method, path, integration, authorization and error shape,
+then compare the resulting inventory with the 22-route design target.
 
 ## Step 5. Configure CORS
 
@@ -115,12 +114,12 @@ not include passwords, session tokens or complete customer payloads.
 
 | Check | Expected result | Evidence state |
 |---|---|---|
-| Lambda configuration | Runtime, handler and role match owning source | Configuration must be inspected |
-| Product endpoint | Returns valid catalogue JSON | Not documented end to end |
-| Authentication | Valid session accepted; invalid session rejected | Not documented end to end |
-| DynamoDB access | Product/cart/order keys resolve correctly | Table capture available; runtime call not documented |
-| CloudWatch | Request and error logs appear without secrets | Alarm capture exists; API request log not documented |
-| Frontend call | Browser request reaches the approved API | Must be verified in End-to-End Testing |
+| Lambda configuration | Runtime, handler and role match owning source | Pending configuration capture |
+| Product endpoint | Returns valid catalogue JSON | Pending live API test |
+| Authentication | Valid session accepted; invalid session rejected | Pending live API test |
+| DynamoDB access | Product/cart/order keys resolve correctly | Table schema captured; runtime call pending |
+| CloudWatch | Request and error logs appear without secrets | Alarms captured; request-log correlation pending |
+| Frontend call | Browser request reaches the approved API | Pending End-to-End test |
 
 **Output for the next step:** a reviewed API contract and verified runtime path
 that can consume database IDs and recommendation results.

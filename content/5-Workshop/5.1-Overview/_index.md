@@ -5,7 +5,6 @@ chapter: false
 pre: " <b> 5.1 </b> "
 ---
 
-# Project Overview
 
 ## Objective
 

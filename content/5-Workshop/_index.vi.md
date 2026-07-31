@@ -5,7 +5,6 @@ chapter: false
 pre: " <b> 5. </b> "
 ---
 
-# Workshop project thương mại điện tử của nhóm
 
 Workshop đi theo hệ thống nhóm từ kiến trúc và điều kiện chuẩn bị tới frontend,
 database, API, Data Engineering, recommendation, monitoring, kiểm thử đầu cuối

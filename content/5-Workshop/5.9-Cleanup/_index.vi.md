@@ -5,7 +5,6 @@ chapter: false
 pre: " <b> 5.11 </b> "
 ---
 
-# Dọn dẹp tài nguyên
 
 **Cảnh báo thao tác phá hủy:** Personalize có thể tiếp tục phát sinh chi phí,
 CloudFront phải disable trước khi delete, S3 bucket phải empty và thứ tự dependency

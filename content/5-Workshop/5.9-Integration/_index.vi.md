@@ -6,7 +6,6 @@ chapter: false
 pre: " <b> 5.9 </b> "
 ---
 
-# Tích hợp hệ thống và bàn giao dữ liệu
 
 Luồng mục tiêu hoàn chỉnh đi qua bốn ranh giới trách nhiệm:
 

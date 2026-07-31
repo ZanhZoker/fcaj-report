@@ -5,7 +5,6 @@ chapter: false
 pre: " <b> 5.5 </b> "
 ---
 
-# Create and Configure the Database
 
 ## Objective and architecture position
 
@@ -13,7 +12,7 @@ DynamoDB is the application persistence layer between the API and the data or
 recommendation workflows. It must keep product and user identifiers stable so
 exports, recommendations, cart operations and orders refer to the same entities.
 
-## Evidence and scope
+## Evidence and limitations
 
 The reviewed frontend source uses a generated in-browser database stored in
 local storage; it does not create or query DynamoDB. The table list and key
@@ -64,8 +63,8 @@ before the API is connected.
 
 ## Step 3. Seed and inspect catalogue data
 
-The frontend prototype seed is not a DynamoDB import. Catalogue data must be
-loaded through the team-approved backend or import process so product IDs match
+Use the frontend prototype seed only as sample catalogue input. Load approved
+catalogue data through the team backend or import process so product IDs match
 the IDs used by interactions and Personalize.
 
 ```powershell
@@ -98,7 +97,6 @@ the pipeline can preserve the source identifiers.
 
 - A table can be ACTIVE while containing no usable catalogue records.
 - A key name mismatch causes validation errors even when the item shape looks correct.
-- Prototype local-storage data does not prove DynamoDB integration.
 - Screenshots must not expose user records, session tokens or account identifiers.
 - Deletion protection is shown off in the supplied capture; cleanup therefore requires careful resource confirmation.
 

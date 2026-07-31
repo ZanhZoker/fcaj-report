@@ -5,7 +5,6 @@ chapter: false
 pre: " <b> 5.2 </b> "
 ---
 
-# Overall Architecture
 
 ## Objective and position
 

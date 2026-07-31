@@ -5,7 +5,6 @@ chapter: false
 pre: " <b> 5.4 </b> "
 ---
 
-# Deploy the Frontend Layer
 
 ## Objective and architecture position
 
@@ -14,7 +13,7 @@ origin, and deliver them over HTTPS through CloudFront. The frontend is a team
 component; this page documents the reviewed source and the deployment procedure,
 not an individual claim by Trần Uy Danh.
 
-## Source-confirmed baseline
+## Evidence and limitations
 
 The team repository uses React, Vite, React Router and Redux Toolkit. Its routes
 cover the home page, product detail, category/search, authentication, cart,
@@ -69,8 +68,8 @@ with the response code expected by the team, then test a nested route directly.
 
 ## Step 5. Connect the application API
 
-The reviewed source does not define a production API environment variable.
-Before cloud integration, the frontend owner must confirm the variable name and
+The remaining integration boundary is the production API contract. Before cloud
+integration, the frontend owner must confirm the environment-variable name and
 replace the mock service through a reviewed API client. A value such as
 `<API-URL>` in this Workshop is documentation syntax, not a deployed endpoint.
 The browser must receive CORS headers from the real API origin.

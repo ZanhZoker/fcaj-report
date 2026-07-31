@@ -5,7 +5,6 @@ chapter: false
 pre: " <b> 5.4 </b> "
 ---
 
-# Triển khai lớp Frontend
 
 ## Mục tiêu và vị trí trong kiến trúc
 
@@ -14,7 +13,7 @@ phối HTTPS qua CloudFront. Frontend là component chung của nhóm; trang nà
 source đã rà soát và quy trình triển khai, không nhận đây là công việc cá nhân
 của Trần Uy Danh.
 
-## Trạng thái được source xác nhận
+## Bằng chứng và giới hạn
 
 Repository nhóm dùng React, Vite, React Router và Redux Toolkit. Route bao gồm
 home, product detail, category/search, authentication, cart, checkout, account,
@@ -68,9 +67,9 @@ tiếp một nested route để kiểm tra.
 
 ## Bước 5. Kết nối API ứng dụng
 
-Source đã rà soát chưa định nghĩa environment variable cho API production. Trước
-khi tích hợp cloud, owner frontend phải xác nhận tên biến và thay mock service
-bằng API client được review. Giá trị `<API-URL>` trong Workshop chỉ là cú pháp
+Ranh giới tích hợp còn lại là API contract production. Trước khi tích hợp cloud,
+owner frontend phải xác nhận tên environment variable và thay mock service bằng
+API client được review. Giá trị `<API-URL>` trong Workshop chỉ là cú pháp
 tài liệu, không phải endpoint đã triển khai. API thật phải trả CORS header phù hợp.
 
 ## Bước 6. Publish bản cập nhật

@@ -5,7 +5,6 @@ chapter: false
 pre: " <b> 5.9 </b> "
 ---
 
-# Monitoring and Alerting
 
 ## Objective and architecture position
 
@@ -13,6 +12,13 @@ Monitoring must answer which component failed, which request or data run was
 affected, how long it took, and whether the failure is isolated or recurring.
 The application Lambda and Data Engineering Lambda are separate functions and
 must be investigated with their own log groups and ownership boundaries.
+
+## Evidence and limitations
+
+The supplied capture confirms application Lambda latency and error alarms with
+actions enabled, while the Data Engineering documentation provides its processing
+log evidence. The notification destination, application-log retention and a
+single correlated application request remain final verification items.
 
 ## Step 1. Locate application logs
 
@@ -63,9 +69,8 @@ and timestamps rather than copying sensitive payloads into the report.
 
 ![CloudWatch alarms supplied by the team](/images/5-Workshop/team/cloudwatch-alarms.png)
 
-*Supplied project capture: alarms for application Lambda latency and errors are present with
-actions enabled. The capture does not identify the notification destination, so
-the report does not claim an SNS topic.*
+*Supplied project capture: alarms for application Lambda latency and errors are
+present with actions enabled. The action destination is intentionally omitted.*
 
 Check period, statistic, threshold, missing-data treatment and action target for
 each alarm. A newly created alarm may show **Insufficient data** until enough
@@ -74,10 +79,9 @@ metric periods arrive.
 ## Step 6. Set log retention and control cost
 
 Retention should be long enough for the internship demonstration and incident
-review, but not unlimited without a reason. The Data Engineering source defines
-a bounded retention for its function; application retention must be inspected
-in the owning environment. Remove verbose debug logging before a public demo and
-avoid logging large request or response bodies.
+review, but not unlimited without a reason. Use the owning environment to record
+the application retention value. Remove verbose debug logging before a public
+demo and avoid logging large request or response bodies.
 
 Cost controls integrated into this step include:
 
@@ -99,12 +103,12 @@ Cost controls integrated into this step include:
 
 | Check | Expected result | Evidence state |
 |---|---|---|
-| Application log group | Recent requests have safe structured logs | Must be inspected |
+| Application log group | Recent requests have safe structured logs | Pending request correlation |
 | Processing log group | Run summary can be matched to artifacts | Documented by Data Engineering |
 | Errors/duration/throttles | Dashboard or CLI view is available | Procedure documented |
 | Alarms | Error and latency alarms exist | Supplied capture |
-| Notification action | Confirmed destination and recipient | Not documented |
-| Retention | Explicit value for each project log group | Data layer documented; application must be inspected |
+| Notification action | Confirmed destination and recipient | Pending owner confirmation |
+| Retention | Explicit value for each project log group | Data layer recorded; application value pending |
 
 **Output for the next step:** timestamps, request/run identifiers, logs and metric
 evidence that can support the End-to-End checklist without exposing sensitive data.

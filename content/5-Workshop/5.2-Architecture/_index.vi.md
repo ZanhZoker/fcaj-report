@@ -5,7 +5,6 @@ chapter: false
 pre: " <b> 5.2 </b> "
 ---
 
-# Kiến trúc tổng thể
 
 ## Mục tiêu và vị trí
 

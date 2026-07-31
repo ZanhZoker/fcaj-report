@@ -5,7 +5,6 @@ chapter: false
 pre: " <b> 5.8 </b> "
 ---
 
-# Build the Recommendation Engine
 
 ## Objective and ownership
 
@@ -17,6 +16,14 @@ model evaluation. Backend and frontend owners integrate the served result.
 The source of truth for preprocessing remains the unchanged
 [Data Engineering Pipeline](../5.7-DataEngineering/); this page starts at its
 handoff boundary.
+
+## Evidence and limitations
+
+The supplied captures confirm an Active custom dataset group, an evaluated
+solution version, its training duration and model metrics. The available evidence
+does not include a campaign response or the backend-to-frontend runtime path;
+those two boundaries remain in the final checklist rather than being repeated in
+each implementation step.
 
 ## Step 1. Receive the clean interactions
 
@@ -83,9 +90,8 @@ and coverage 0.9505. These are ML-team results, not Data Engineering metrics.*
 ## Step 10. Create a campaign only when required
 
 A campaign is needed for the campaign-based runtime described in the proposal
-and can remain a significant cost driver while active. No campaign capture is
-provided here, so the report does not claim a live campaign. Create it only for
-an approved test/demo window and record its status without publishing the ARN.
+and can remain a significant cost driver while active. Create it only for an
+approved test/demo window and record its status without publishing the ARN.
 
 ## Step 11. Verify runtime recommendations
 
@@ -123,8 +129,8 @@ prototype's local related-product logic.
 | Dataset group | Active custom group | Supplied capture |
 | Solution version | Active and evaluated | Supplied capture |
 | Model metrics | Recorded from the evaluated version | Supplied capture |
-| Campaign/runtime | Returns ranked IDs for valid users | Not documented |
-| Backend/frontend | Preserves rank and resolves products | Not documented end to end |
+| Campaign/runtime | Returns ranked IDs for valid users | Pending runtime response |
+| Backend/frontend | Preserves rank and resolves products | Pending integrated test |
 
 **Output for the next step:** an evaluated solution version and, when explicitly
 created for testing, a runtime resource whose ranked IDs can be traced through

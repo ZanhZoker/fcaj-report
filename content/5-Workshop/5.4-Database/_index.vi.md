@@ -5,7 +5,6 @@ chapter: false
 pre: " <b> 5.5 </b> "
 ---
 
-# Tạo và cấu hình Database
 
 ## Mục tiêu và vị trí trong kiến trúc
 
@@ -13,7 +12,7 @@ DynamoDB là lớp lưu trữ ứng dụng giữa API với luồng dữ liệu/
 này phải giữ product ID và user ID ổn định để export, recommendation, cart và
 order cùng tham chiếu đúng entity.
 
-## Bằng chứng và phạm vi
+## Bằng chứng và giới hạn
 
 Source frontend đã rà soát dùng database sinh trong trình duyệt và lưu bằng local
 storage; source này không tạo hoặc query DynamoDB. Danh sách bảng và key dưới đây
@@ -62,8 +61,8 @@ trước khi kết nối API.
 
 ## Bước 3. Seed và kiểm tra catalogue
 
-Dữ liệu seed của prototype frontend không phải DynamoDB import. Catalogue phải
-được nạp qua backend hoặc quy trình import đã được nhóm duyệt để product ID khớp
+Chỉ dùng dữ liệu seed của prototype frontend làm catalogue input mẫu. Nạp
+catalogue đã duyệt qua backend hoặc quy trình import của nhóm để product ID khớp
 với interactions và Personalize.
 
 ```powershell
@@ -95,7 +94,6 @@ nguyên định danh nguồn.
 
 - Bảng ACTIVE nhưng chưa có catalogue record sử dụng được.
 - Sai tên key gây validation error dù item trông đúng.
-- Dữ liệu local-storage của prototype không chứng minh tích hợp DynamoDB.
 - Ảnh không được để lộ user record, session token hoặc account identifier.
 - Ảnh cho thấy deletion protection đang off; cleanup phải xác nhận tài nguyên cẩn thận.
 

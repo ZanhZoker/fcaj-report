@@ -5,21 +5,21 @@ chapter: false
 pre: " <b> 5.6 </b> "
 ---
 
-# Triển khai lớp API
 
 ## Mục tiêu và vị trí trong kiến trúc
 
 API nằm giữa frontend React với DynamoDB hoặc Amazon Personalize. Lớp này cần
 validate request, thực thi authentication/ownership, tính order total đáng tin
-cậy và trả JSON ổn định. Đây là component nhóm; source backend ứng dụng không có
-trong repository frontend đã rà soát.
+cậy và trả JSON ổn định. Component nhóm này có owner riêng với phần Data
+Engineering của Trần Uy Danh.
 
-## Ranh giới bằng chứng
+## Bằng chứng và giới hạn
 
-Proposal nhóm mô tả HTTP API Gateway có 22 routes và Lambda Node.js 20 tên
-**fcj-api**. Ảnh console do nhóm cung cấp cho thấy code tạo order trong Lambda và
-handler **index.handler**, nhưng ảnh không chứng minh mọi route, environment
-variable, timeout hoặc memory setting.
+Proposal nhóm ghi nhận HTTP API Gateway có 22 routes và Lambda Node.js 20 tên
+**fcj-api**. Ảnh console do nhóm cung cấp xác nhận code tạo order và handler
+**index.handler**. Source backend và live configuration không nằm trong tài liệu
+đã rà soát, vì vậy runtime detail, route inventory, environment variable, timeout
+và memory là các hạng mục cần xác minh cuối.
 
 ![Code Application Lambda do nhóm cung cấp](/images/5-Workshop/team/application-lambda.png)
 
@@ -45,8 +45,8 @@ aws lambda get-function-configuration `
 ```
 
 Đối chiếu runtime, handler, role, architecture, timeout, memory và tên environment
-variable với source của owner. Node.js 20 trong proposal là tài liệu thiết kế;
-báo cáo không tự tạo giá trị runtime còn thiếu.
+variable với source của owner. Ghi lại giá trị quan sát được cùng design target
+Node.js 20 trước khi triển khai.
 
 ## Bước 3. Cấu hình environment variable
 
@@ -70,9 +70,8 @@ aws apigatewayv2 get-routes `
   --profile <AWS-PROFILE>
 ```
 
-Với mỗi route, kiểm tra method, path, integration, authorization và error shape.
-Con số 22 routes vẫn ở mức proposal cho tới khi output route hoặc source backend
-được rà soát.
+Với mỗi route, kiểm tra method, path, integration, authorization và error shape,
+sau đó so sánh inventory thu được với design target 22 routes.
 
 ## Bước 5. Cấu hình CORS
 
@@ -110,12 +109,12 @@ Kiểm tra request ID, status code, duration và error context có cấu trúc. 
 
 | Hạng mục | Kết quả mong đợi | Trạng thái bằng chứng |
 |---|---|---|
-| Lambda configuration | Runtime, handler và role khớp source owner | Cần kiểm tra configuration |
-| Product endpoint | Trả catalogue JSON hợp lệ | Chưa có minh chứng đầu cuối |
-| Authentication | Session hợp lệ được chấp nhận, session sai bị từ chối | Chưa có minh chứng đầu cuối |
-| DynamoDB access | Product/cart/order key resolve đúng | Có ảnh bảng; chưa có runtime call |
-| CloudWatch | Có request/error log và không lộ secret | Có ảnh alarm; chưa có API request log |
-| Frontend call | Browser request tới đúng API | Cần kiểm tra ở End-to-End Testing |
+| Lambda configuration | Runtime, handler và role khớp source owner | Chờ capture configuration |
+| Product endpoint | Trả catalogue JSON hợp lệ | Chờ live API test |
+| Authentication | Session hợp lệ được chấp nhận, session sai bị từ chối | Chờ live API test |
+| DynamoDB access | Product/cart/order key resolve đúng | Đã có table schema; chờ runtime call |
+| CloudWatch | Có request/error log và không lộ secret | Đã có alarm; chờ correlate request log |
+| Frontend call | Browser request tới đúng API | Chờ End-to-End test |
 
 **Đầu ra cho bước tiếp theo:** API contract đã review và runtime path đã xác minh
 để dùng database ID cùng recommendation result.

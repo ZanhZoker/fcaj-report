@@ -5,7 +5,6 @@ chapter: false
 pre: " <b> 5.11 </b> "
 ---
 
-# Clean Up
 
 **Destructive-operation warning:** Personalize resources may continue generating
 cost, CloudFront must be disabled before deletion, S3 buckets must be emptied,

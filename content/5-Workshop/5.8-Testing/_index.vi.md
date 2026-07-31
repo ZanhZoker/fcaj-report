@@ -5,7 +5,6 @@ chapter: false
 pre: " <b> 5.10 </b> "
 ---
 
-# Kiểm thử End-to-End
 
 Một component hoạt động riêng lẻ không chứng minh toàn hệ thống hoạt động. Kiểm
 thử đầu cuối phải theo cùng identifier và expected result từ browser, frontend,
@@ -17,6 +16,14 @@ một trang AWS chỉ là bằng chứng hỗ trợ cho component đó.
 Dùng AWS profile đã xác minh ở **ap-southeast-1**, CloudFront/API URL được duyệt,
 hai test user không nhạy cảm, một product ID đã biết, interaction export có kiểm
 soát và quyền xem CloudWatch. Ghi timestamp để nối observation giữa các dịch vụ.
+
+## Bằng chứng và giới hạn
+
+Source đã rà soát và ảnh cung cấp xác nhận prototype React/Vite, thiết kế bảng
+DynamoDB, logic order trong Lambda, tài nguyên training Personalize, CloudWatch
+alarm và handoff Data Engineering hoàn chỉnh. Bộ bằng chứng chưa có một lần chạy
+browser-to-recommendation kèm timestamp, nên các kiểm tra application live và
+runtime được gom vào checklist cuối.
 
 ## Bước 1. Kiểm tra các lớp hạ tầng
 
@@ -84,9 +91,8 @@ Kiểm tra:
 - backend giữ thứ tự Personalize trả về;
 - frontend render cùng thứ tự.
 
-Ảnh dataset group và model metrics chỉ chứng minh training resource, không chứng
-minh live campaign hoặc runtime call. Runtime recommendation vẫn là **Not
-documented** cho tới khi thành viên phụ trách ghi nhận response.
+Ghi lại runtime response, request timestamp và item ID trả về để nối tài nguyên
+training đã xác nhận với application path.
 
 ## Bước 4. Kiểm tra luồng Browser
 
@@ -152,25 +158,24 @@ ID là dữ liệu prototype, không chứng minh DynamoDB/Personalize integrati
 
 | Hạng mục | Kết quả mong đợi | Trạng thái hoặc bằng chứng |
 |---|---|---|
-| CloudFront loads | HTTPS trả build hiện tại | Có ảnh distribution; chưa có live response |
+| CloudFront loads | HTTPS trả build hiện tại | Đã có ảnh distribution; chờ lượt tải có timestamp |
 | Frontend assets | JavaScript, CSS và ảnh không lỗi | Có ảnh giao diện và source `dist/` |
-| Product API | Trả product JSON cho ID đã biết | Not documented |
-| Authentication | Login hợp lệ thành công, session sai bị từ chối | Chỉ có source prototype; cloud result chưa có |
-| Cart | Add/update/remove lưu đúng user | Chỉ có source prototype; cloud result chưa có |
-| Checkout | Server tính và lưu controlled order | Có ảnh code Lambda; runtime đầy đủ chưa có |
-| Order history | Order mới hiện cho cùng user | Not documented |
+| Product API | Trả product JSON cho ID đã biết | Chờ API call có timestamp |
+| Authentication | Login hợp lệ thành công, session sai bị từ chối | Có prototype flow; chờ cloud test |
+| Cart | Add/update/remove lưu đúng user | Có prototype flow; chờ cloud test |
+| Checkout | Server tính và lưu controlled order | Đã có logic order trong Lambda; chờ runtime test |
+| Order history | Order mới hiện cho cùng user | Chờ controlled order test |
 | Data Engineering trigger | Controlled upload invoke processing | Có trong trang Data Engineering |
 | Clean dataset | Clean output và quality report cùng run | Có trong trang Data Engineering |
 | ID preservation | User/item ID nguồn không đổi | Có trong trang Data Engineering |
-| Personalize recommendation | Runtime trả ranked ID | Có training evidence; runtime chưa có |
-| Recommendation order | API/frontend giữ model order | Not documented |
-| CloudWatch logs | Correlate request/run và không lộ secret | Có evidence component; full correlation chưa có |
+| Personalize recommendation | Runtime trả ranked ID | Có training evidence; chờ runtime response |
+| Recommendation order | API/frontend giữ model order | Chờ integrated response trace |
+| CloudWatch logs | Correlate request/run và không lộ secret | Có evidence component; chờ full correlation |
 
 ## Kết quả và kết luận nhóm
 
 Bằng chứng hiện có hỗ trợ prototype React/Vite, ảnh component triển khai, handoff
-Data Engineering, tài nguyên training Personalize và monitoring alarms. Chưa có
-bằng chứng cho một lần chạy browser-to-recommendation hoàn chỉnh. Nhóm nên hoàn
-thành các dòng **Not documented** bằng một test run có timestamp trước khi trình
+Data Engineering, tài nguyên training Personalize và monitoring alarms. Một test
+run có timestamp cần hoàn tất các dòng checklist đang chờ trước khi nhóm trình
 bày project đã tích hợp toàn bộ. Vai trò đã xác minh của Trần Uy Danh vẫn là ranh
 giới Data Engineering trong hệ thống chung đó.

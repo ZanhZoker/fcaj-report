@@ -5,7 +5,6 @@ chapter: false
 pre: " <b> 5.8 </b> "
 ---
 
-# Xây dựng Recommendation Engine
 
 ## Mục tiêu và phân công
 
@@ -17,6 +16,13 @@ model. Owner backend/frontend tích hợp kết quả runtime.
 Nguồn sự thật cho preprocessing vẫn là trang
 [Pipeline Data Engineering](../5.7-DataEngineering/) được giữ nguyên; trang này
 bắt đầu từ ranh giới bàn giao của pipeline.
+
+## Bằng chứng và giới hạn
+
+Ảnh cung cấp xác nhận custom dataset group Active, solution version đã đánh giá,
+training duration và model metrics. Bằng chứng hiện có chưa gồm campaign response
+hoặc runtime path từ backend tới frontend; hai ranh giới này được gom vào checklist
+cuối thay vì lặp lại trong từng bước triển khai.
 
 ## Bước 1. Nhận clean interactions
 
@@ -79,8 +85,8 @@ và coverage 0,9505. Đây là kết quả ML của nhóm, không phải metric 
 ## Bước 10. Chỉ tạo campaign khi cần
 
 Campaign cần cho runtime dạng campaign trong proposal và có thể là nguồn chi phí
-lớn khi còn active. Báo cáo không có ảnh campaign nên không khẳng định live
-campaign. Chỉ tạo trong cửa sổ test/demo đã duyệt và ghi status mà không công khai ARN.
+lớn khi còn active. Chỉ tạo trong cửa sổ test/demo đã duyệt và ghi status mà
+không công khai ARN.
 
 ## Bước 11. Kiểm tra recommendation runtime
 
@@ -117,8 +123,8 @@ logic của prototype.
 | Dataset group | Custom group Active | Có ảnh cung cấp |
 | Solution version | Active và đã đánh giá | Có ảnh cung cấp |
 | Model metrics | Ghi nhận từ version đã đánh giá | Có ảnh cung cấp |
-| Campaign/runtime | Trả ranked ID cho user hợp lệ | Chưa có tài liệu |
-| Backend/frontend | Giữ rank và resolve product | Chưa có minh chứng đầu cuối |
+| Campaign/runtime | Trả ranked ID cho user hợp lệ | Chờ runtime response |
+| Backend/frontend | Giữ rank và resolve product | Chờ integrated test |
 
 **Đầu ra cho bước tiếp theo:** solution version đã đánh giá và, khi được tạo rõ
 ràng cho test, runtime resource có ranked ID truy vết qua API tới frontend.

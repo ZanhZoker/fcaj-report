@@ -6,7 +6,6 @@ chapter: false
 pre: " <b> 5.9 </b> "
 ---
 
-# System Integration and Data Handoff
 
 The complete target flow crosses four responsibility boundaries:
 

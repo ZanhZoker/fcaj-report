@@ -5,7 +5,6 @@ chapter: false
 pre: " <b> 5.10 </b> "
 ---
 
-# End-to-End Testing
 
 A component working in isolation does not prove that the system works as a
 whole. End-to-end verification must follow the same identifiers and expected
@@ -19,6 +18,14 @@ Use a verified AWS profile in **ap-southeast-1**, the approved CloudFront and AP
 URLs, two non-sensitive test users, a known product ID, a controlled interaction
 export, and access to CloudWatch logs. Record timestamps so observations across
 services can be correlated.
+
+## Evidence and limitations
+
+Reviewed source and supplied captures support the React/Vite prototype, DynamoDB
+table design, Lambda order logic, Personalize training resources, CloudWatch
+alarms and the complete Data Engineering handoff. The evidence set does not yet
+contain one timestamped browser-to-recommendation run, so live application and
+runtime checks remain in the final checklist.
 
 ## Step 1. Verify Infrastructure Layers
 
@@ -87,9 +94,8 @@ Check that:
 - the backend preserves the order returned by Personalize;
 - the frontend renders the same order.
 
-The supplied dataset-group and model-metric captures prove training resources,
-not a live campaign or successful runtime call. Runtime recommendation remains
-**Not documented** until the responsible team member records the response.
+Capture the runtime response, request timestamp and returned IDs so this test can
+connect the verified training resources to the application path.
 
 ## Step 4. Verify the Browser Workflow
 
@@ -156,25 +162,24 @@ local-storage IDs are prototype data and do not prove DynamoDB or Personalize in
 
 | Item | Expected result | Status or evidence |
 |---|---|---|
-| CloudFront loads | HTTPS page returns the current build | Distribution capture available; live response not documented |
+| CloudFront loads | HTTPS page returns the current build | Distribution captured; pending timestamped load |
 | Frontend assets | JavaScript, CSS and images load without errors | Interface captures and `dist/` source available |
-| Product API | Valid product JSON for a known ID | Not documented |
-| Authentication | Valid login succeeds; invalid session is rejected | Prototype source only; cloud result not documented |
-| Cart | Add, update and remove persist for the user | Prototype source only; cloud result not documented |
-| Checkout | Server calculates and stores a controlled order | Lambda code capture; full runtime result not documented |
-| Order history | New order appears for the same user | Not documented |
+| Product API | Valid product JSON for a known ID | Pending timestamped API call |
+| Authentication | Valid login succeeds; invalid session is rejected | Prototype flow available; cloud test pending |
+| Cart | Add, update and remove persist for the user | Prototype flow available; cloud test pending |
+| Checkout | Server calculates and stores a controlled order | Lambda order logic captured; runtime test pending |
+| Order history | New order appears for the same user | Pending controlled order test |
 | Data Engineering trigger | Controlled upload invokes processing | Documented in the Data Engineering page |
 | Clean dataset | Clean output and quality report belong to the same run | Documented in the Data Engineering page |
 | ID preservation | Original user/item IDs remain unchanged | Documented in the Data Engineering page |
-| Personalize recommendation | Runtime returns ranked IDs | Training evidence available; runtime not documented |
-| Recommendation order | API and frontend preserve model order | Not documented |
-| CloudWatch logs | Requests/runs can be correlated without secrets | Component evidence available; full correlation not documented |
+| Personalize recommendation | Runtime returns ranked IDs | Training evidence available; runtime response pending |
+| Recommendation order | API and frontend preserve model order | Pending integrated response trace |
+| CloudWatch logs | Requests/runs can be correlated without secrets | Component evidence available; full correlation pending |
 
 ## Result and team conclusion
 
 The available evidence supports the React/Vite prototype, deployed component
 captures, Data Engineering handoff, Personalize training resources and monitoring
-alarms. It does not yet prove one successful browser-to-recommendation run. The
-team should complete the **Not documented** rows with one timestamped test run
-before presenting the project as fully integrated. Trần Uy Danh's verified role
+alarms. One timestamped run should now complete the pending checklist rows before
+the team presents the project as fully integrated. Trần Uy Danh's verified role
 remains the Data Engineering boundary within that wider team system.

@@ -5,13 +5,19 @@ chapter: false
 pre: " <b> 5.9 </b> "
 ---
 
-# Monitoring và Alerting
 
 ## Mục tiêu và vị trí trong kiến trúc
 
 Monitoring phải trả lời component nào lỗi, request hoặc data run nào bị ảnh hưởng,
 thời gian xử lý bao lâu và lỗi đơn lẻ hay lặp lại. Application Lambda và Data
 Engineering Lambda là hai function riêng, cần log group và ownership riêng khi điều tra.
+
+## Bằng chứng và giới hạn
+
+Ảnh cung cấp xác nhận alarm latency và error của Application Lambda đang bật
+action; tài liệu Data Engineering có minh chứng processing log riêng. Notification
+destination, application-log retention và một application request được correlate
+đầy đủ là các hạng mục xác minh cuối.
 
 ## Bước 1. Xác định application logs
 
@@ -61,7 +67,7 @@ copy payload nhạy cảm vào báo cáo.
 ![CloudWatch alarm do nhóm cung cấp](/images/5-Workshop/team/cloudwatch-alarms.png)
 
 *Minh chứng nhóm: có alarm latency và error cho Application Lambda với action
-enabled. Ảnh không cho biết notification destination nên báo cáo không khẳng định SNS topic.*
+enabled. Action destination được chủ động lược khỏi ảnh.*
 
 Kiểm tra period, statistic, threshold, missing-data treatment và action target.
 Alarm mới tạo có thể ở **Insufficient data** cho tới khi đủ metric period.
@@ -69,9 +75,8 @@ Alarm mới tạo có thể ở **Insufficient data** cho tới khi đủ metric
 ## Bước 6. Đặt retention và kiểm soát chi phí
 
 Retention phải đủ cho demo và incident review nhưng không để vô hạn nếu không có
-lý do. Source Data Engineering định nghĩa retention hữu hạn cho function của nó;
-retention ứng dụng phải được kiểm tra trong môi trường owner. Tắt debug log dài
-trước demo công khai và không log request/response body lớn.
+lý do. Dùng môi trường của owner để ghi nhận retention ứng dụng. Tắt debug log
+dài trước demo công khai và không log request/response body lớn.
 
 Các kiểm soát chi phí được tích hợp tại bước này:
 
@@ -93,12 +98,12 @@ Các kiểm soát chi phí được tích hợp tại bước này:
 
 | Hạng mục | Kết quả mong đợi | Trạng thái bằng chứng |
 |---|---|---|
-| Application log group | Request gần nhất có structured log an toàn | Cần kiểm tra |
+| Application log group | Request gần nhất có structured log an toàn | Chờ correlate request |
 | Processing log group | Run summary khớp artifact | Được Data Engineering ghi nhận |
 | Errors/duration/throttles | Có dashboard hoặc CLI view | Đã mô tả quy trình |
 | Alarms | Có error và latency alarm | Có ảnh cung cấp |
-| Notification action | Destination và recipient được xác nhận | Chưa có tài liệu |
-| Retention | Có giá trị rõ cho từng log group project | Data layer đã ghi nhận; application cần kiểm tra |
+| Notification action | Destination và recipient được xác nhận | Chờ owner xác nhận |
+| Retention | Có giá trị rõ cho từng log group project | Data layer đã ghi nhận; chờ giá trị application |
 
 **Đầu ra cho bước tiếp theo:** timestamp, request/run identifier, log và metric
 evidence hỗ trợ End-to-End checklist mà không lộ dữ liệu nhạy cảm.

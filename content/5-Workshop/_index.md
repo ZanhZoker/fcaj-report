@@ -5,7 +5,6 @@ chapter: false
 pre: " <b> 5. </b> "
 ---
 
-# Team E-commerce Project Workshop
 
 This workshop follows the team system from architecture and prerequisites through
 frontend, database, API, Data Engineering, recommendations, monitoring,
