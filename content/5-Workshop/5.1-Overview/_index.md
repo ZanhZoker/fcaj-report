@@ -1,39 +1,42 @@
 ---
-title : "Overview and architecture"
-date : 2026-07-28
-weight : 1
-chapter : false
-pre : " <b> 5.1 </b> "
+title: "Project Overview"
+weight: 1
+chapter: false
+pre: " <b> 5.1 </b> "
 ---
 
-#### The problem
+# Project Overview
 
-An online store may carry thousands of products, while a typical shopper only has the patience to browse a few dozen. Ranking products by sales volume or upload date means most of the catalogue is never seen, and users have to hunt for what they want on their own.
+The team project addresses product discovery in an e-commerce experience that
+also covers the normal shopping journey. The available frontend prototype
+contains catalogue, category, text search, product detail, cart, checkout,
+account, seller, notification, and administration routes. Recommendation and
+visual search extend discovery beyond direct text queries.
 
-The system in this workshop addresses that by learning from actual user behaviour to suggest products tailored to each person.
+#### Project goals
 
-#### Architecture
+- Provide an accessible React/Vite commerce interface.
+- Use a serverless AWS target architecture for delivery and business services.
+- Prepare interaction data safely for recommendation training.
+- Return recommendation results through the application to the frontend.
+- Maintain clear ownership, monitoring, security, testing, cost, and cleanup.
 
-![Overall architecture](/images/5-Workshop/architecture.png)
+#### Component and evidence summary
 
-The system splits into two independent paths:
+| Area | Role in the project | Current evidence |
+|---|---|---|
+| Frontend | Commerce screens and browser flows | React/Vite source; browser-local mock data |
+| Cloud delivery | S3 origin and CloudFront HTTPS distribution | Proposal; screenshots pending |
+| Backend | API Gateway and application Lambda | Proposal; source/screenshots pending |
+| Application database | DynamoDB application tables | Proposal; source/screenshots pending |
+| Data Engineering | Validate and hand off interactions | Source, tests, reports, SAM template |
+| Machine Learning | Personalize training/evaluation/campaign | Proposal and blogs; direct evidence pending |
+| Visual search | CLIP embeddings and similarity | Proposal; implementation evidence pending |
 
-**The content delivery path.** Users hit the CloudFront domain, and CloudFront serves the pre-built HTML, CSS and JavaScript files stored in an S3 bucket. Because this is static content, it can be cached at edge locations close to users, cutting latency and incurring almost no compute cost.
+#### Personal role
 
-**The data path.** The frontend calls API Gateway, which invokes a Lambda function. Depending on the route, Lambda queries DynamoDB for business data or calls Amazon Personalize for a recommendation list.
+I am responsible for the Data Engineering pipeline, not the whole platform. My
+work begins with the application/database export and ends with the clean dataset
+and quality-report handoff to the ML member/team.
 
-#### Why these services
-
-**Serverless instead of traditional servers.** Traffic for an internship project is low and uneven. With EC2 or ECS you pay by the hour even when nobody visits. With Lambda, no requests means no cost.
-
-**DynamoDB instead of RDS.** RDS bills per instance-hour even when idle. DynamoDB in on-demand mode bills only for actual reads and writes. For key-based data with simple access patterns, DynamoDB is the better fit.
-
-**Amazon Personalize instead of training on SageMaker.** Implementing a recommendation algorithm from scratch requires deep expertise and a lot of tuning time. Personalize packages the same algorithms Amazon uses in its own products, letting you focus on data quality rather than model implementation.
-
-**CloudFront in front of S3.** Beyond speed, CloudFront lets you keep the bucket fully private and provides HTTPS at no extra cost.
-
-#### Design principles applied throughout
-
-- **Never trust data from the browser.** The server always looks up prices and recalculates totals itself, rather than using figures sent by the frontend.
-- **Least privilege.** Each component receives only the permissions it needs, on only the resources it needs.
-- **No hard-coded credentials.** Lambda uses an execution role; no access keys are embedded in source code.
+<!-- TODO: Team evidence - project overview and deployed experience -->

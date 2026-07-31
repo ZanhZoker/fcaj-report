@@ -1,48 +1,38 @@
 ---
 title: "Tuần 9"
-date: 2026-07-29
 weight: 9
 chapter: false
 pre: " <b> 1.9 </b> "
 ---
 
-#### Tuần 9 — Giám sát, kiểm thử và tài liệu
+#### Tuần 9 — Rà soát cuối và nộp bài
 
-**Thời gian:** 27/07 - 02/08/2026
+**Thời gian:** 10-14/08/2026
+
+**Trạng thái:** Kế hoạch
 
 #### Mục tiêu
 
-- Thiết lập giám sát và cảnh báo cho hệ thống
-- Kiểm thử toàn luồng từ trình duyệt tới mô hình
-- Lập kế hoạch dọn dẹp tài nguyên
-- Hoàn thiện tài liệu và báo cáo thực tập
+- Bổ sung Event đã xác minh, hoàn thiện các phần phản ánh và nộp bài.
+- Kiểm tra website và dọn tài nguyên AWS không còn cần thiết.
 
-#### Công việc đã thực hiện
+#### Hoạt động
 
-Tạo SNS topic và đăng ký email nhận cảnh báo. Thiết lập hai CloudWatch alarm cho
-tỉ lệ lỗi và độ trễ của Lambda, kiểm tra bằng cách gọi thử đường dẫn không tồn
-tại để sinh lỗi.
+Công việc dự kiến gồm thêm thông tin Event sau khi có minh chứng, hoàn thiện tự
+đánh giá và phản hồi, kiểm tra link và tính tương đương song ngữ, build Hugo lần
+cuối, hoàn thành resource cleanup và nộp link theo quy trình FCAJ.
 
-Kiểm thử toàn luồng theo từng lớp từ trong ra ngoài: DynamoDB, API, Personalize,
-rồi tới giao diện. Kiểm tra riêng hai điểm quan trọng: gợi ý cho hai người dùng
-khác nhau phải khác nhau, và đặt hàng với giá bị sửa phải bị máy chủ tính lại.
+#### Kết quả
 
-Lập bảng kiểm dọn dẹp tài nguyên theo thứ tự ưu tiên, đặt Personalize campaign
-lên đầu vì đây là thành phần tính phí theo giờ tồn tại.
+Chưa ghi nhận kết quả trước khi các hoạt động trên diễn ra.
 
-Viết tài liệu workshop dạng lab hướng dẫn từng bước, và hoàn thiện báo cáo thực
-tập trên nền tảng Hugo.
+#### Khó khăn
 
-#### Kết quả đạt được
+Rà soát cuối phải phân biệt rõ việc đã hoàn thành với kế hoạch, đồng thời không
+để sót tài nguyên tính phí hoặc tài nguyên mở công khai.
 
-- Hai alarm hoạt động, gửi email khi vượt ngưỡng
-- Bảng kiểm thử toàn luồng với 8 hạng mục đều đạt
-- Tài liệu workshop cho phép người khác dựng lại toàn bộ hệ thống
-- Báo cáo thực tập song ngữ hoàn chỉnh
+#### Bước tiếp theo
 
-#### Khó khăn và cách xử lý
+Chỉ nộp sau khi hoàn thành checklist, build, rà soát riêng tư và cleanup.
 
-Khi viết tài liệu workshop mới phát hiện nhiều chỗ mình tưởng đã hiểu nhưng thực
-ra chưa. Để hướng dẫn người khác làm lại được thì phải giải thích được từng bước,
-không thể viết mơ hồ. Đây là cách kiểm tra kiến thức hiệu quả hơn nhiều so với tự
-đánh giá.
+<!-- TODO: Bổ sung thông tin Event đã xác minh và minh chứng nộp bài -->

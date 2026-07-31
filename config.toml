@@ -3,9 +3,7 @@ baseURL = "https://zanhzoker.github.io/fcaj-report/"
 relativeURLs = false
 canonifyURLs = true
 
-# Giữ English là ngôn ngữ mặc định vì:
-# _index.md là tiếng Anh
-# _index.vi.md là tiếng Việt
+# English is the default language; Vietnamese pages use the .vi.md suffix.
 defaultContentLanguage = "en"
 
 # Hugo theme
@@ -21,7 +19,7 @@ themeVariant = "workshop"
 # Để trống vì chưa cần nút chỉnh sửa nội dung trên GitHub
 editURL = ""
 
-description = "AWS FCAJ Internship Report - Data Engineering"
+description = "AWS FCAJ Internship Report - E-commerce Recommendation Project and Data Engineering"
 author = "Trần Uy Danh"
 
 showVisitedLinks = true

@@ -1,82 +1,33 @@
 ---
-title : "Giám sát và cảnh báo"
-date : 2026-07-28
-weight : 7
-chapter : false
-pre : " <b> 5.7 </b> "
+title: "Giám sát, IAM và bảo mật"
+weight: 11
+chapter: false
+pre: " <b> 5.11 </b> "
 ---
 
-Hệ thống chạy được không có nghĩa là xong. Nếu Lambda bắt đầu lỗi lúc 2 giờ sáng, bạn cần biết trước khi người dùng phàn nàn.
+Phần này tách biệt các biện pháp đã được xác nhận trong source Data Engineering với các biện pháp vẫn là mục tiêu của ứng dụng nhóm.
 
-#### Bước 1. Xem log
+#### Kiểm soát Data Engineering đã được xác nhận trong source
 
-Lambda tự động ghi log vào CloudWatch nhờ policy `AWSLambdaBasicExecutionRole` đã gán ở mục 5.5.
+- **CloudWatch Logs:** log chạy Lambda cung cấp dấu vết cho từng lần xử lý do S3 kích hoạt. SAM template tạo log group của function với thời gian lưu bảy ngày.
+- **IAM tối thiểu:** function xử lý chỉ được đọc `incoming/*` và ghi vào `processed/*`, `rejected/*`, `reports/*` trong data bucket.
+- **Lưu trữ riêng tư:** S3 bucket chặn truy cập công khai và dùng mã hóa phía máy chủ với khóa do Amazon S3 quản lý.
+- **Cấu hình:** bucket và các output prefix được truyền qua biến môi trường. Credential và secret không được lưu trong repository.
+- **Khả năng quan sát lỗi:** lỗi validation được ghi thành artifact rejected và được tổng hợp trong quality report JSON và Markdown. Ngoại lệ không dự kiến được ghi vào Lambda log.
 
-1. Mở [CloudWatch console](https://ap-southeast-1.console.aws.amazon.com/cloudwatch/home?region=ap-southeast-1)
-2. Chọn **Log groups**, tìm `/aws/lambda/fcj-recsys-api`
-3. Mở log stream mới nhất
+Repository không xác nhận CloudWatch alarm, SNS topic hoặc thông báo email, vì vậy báo cáo không trình bày các tài nguyên này như đã triển khai.
 
-Đây là nơi đầu tiên cần nhìn mỗi khi API trả về lỗi 500. Thông báo lỗi trả về cho người dùng thường bị rút gọn, còn stack trace đầy đủ nằm ở đây.
+#### Mục tiêu bảo mật cho ứng dụng nhóm
 
-#### Bước 2. Tạo SNS topic nhận thông báo
+Proposal hướng đến HTTPS qua CloudFront, S3 origin riêng tư với Origin Access Control, API có xác thực, quyền Lambda giới hạn và dữ liệu ứng dụng được bảo vệ. Source frontend hiện tại là prototype chạy trên trình duyệt, dùng dữ liệu mock và local storage; vì vậy đây không phải bằng chứng cho xác thực production, password hashing, OAC đã triển khai hoặc giám sát backend.
 
-```bash
-aws sns create-topic --name fcj-recsys-alerts
-```
+Trước khi phát hành production, nhóm cần xác minh phân quyền request, kiểm tra input, password hashing, quản lý secret, che dữ liệu nhạy cảm trong log, CORS, quyền tối thiểu và thời gian lưu log trên toàn bộ application stack.
 
-Đăng ký email nhận cảnh báo:
+<!-- TODO: Team evidence - CloudFront HTTPS and private origin configuration -->
+<!-- TODO: Team evidence - application IAM roles and security review -->
+<!-- TODO: Team evidence - application logs or monitoring dashboard -->
+<!-- TODO: Personal evidence - CloudWatch execution log with sensitive values redacted -->
 
-```bash
-aws sns subscribe \
-  --topic-arn <TOPIC-ARN> \
-  --protocol email \
-  --notification-endpoint email-cua-ban@example.com
-```
+#### Checklist minh chứng
 
-Mở hộp thư và bấm xác nhận đăng ký.
-
-#### Bước 3. Tạo alarm cho tỉ lệ lỗi
-
-1. Mở [CloudWatch console](https://ap-southeast-1.console.aws.amazon.com/cloudwatch/home?region=ap-southeast-1), chọn **Alarms** rồi **Create alarm**
-2. Chọn **Select metric**, vào **Lambda** rồi **By Function Name**
-3. Tìm hàm `fcj-recsys-api`, chọn metric **Errors**, chọn **Select metric**
-4. Ở phần **Conditions**:
-   - **Statistic**: Sum
-   - **Period**: 5 minutes
-   - **Threshold type**: Static
-   - **Whenever Errors is**: Greater than `5`
-5. Chọn **Next**, ở phần thông báo chọn topic `fcj-recsys-alerts`
-6. Đặt tên alarm `fcj-lambda-errors`, chọn **Create alarm**
-
-![Tạo alarm](/images/5-Workshop/5.7/create-alarm.png)
-
-#### Bước 4. Tạo alarm cho độ trễ
-
-Lặp lại các bước trên nhưng chọn metric **Duration**, thống kê **Average**, ngưỡng lớn hơn `3000` mili giây. Đặt tên `fcj-lambda-latency`.
-
-Độ trễ tăng thường là dấu hiệu sớm hơn lỗi. Khi Lambda chạy chậm dần, thường là do truy vấn DynamoDB không hiệu quả hoặc Personalize phản hồi chậm.
-
-#### Bước 5. Đặt cảnh báo chi phí
-
-Đây là thứ nhiều người bỏ qua và phải trả giá.
-
-1. Mở [Billing console](https://console.aws.amazon.com/billing/home#/budgets)
-2. Chọn **Budgets** rồi **Create budget**
-3. Chọn **Cost budget**, đặt ngưỡng phù hợp, ví dụ 10 USD mỗi tháng
-4. Thêm cảnh báo khi đạt 80 phần trăm ngưỡng, điền email của bạn
-
-{{% notice tip %}}
-Personalize campaign tính phí theo giờ tồn tại. Nếu quên xoá sau khi hoàn thành, chi phí tích luỹ âm thầm. Cảnh báo ngân sách là lưới an toàn cho tình huống đó.
-{{% /notice %}}
-
-#### Kiểm tra alarm hoạt động
-
-Gọi thử một đường dẫn không tồn tại nhiều lần để sinh lỗi:
-
-```bash
-for i in {1..10}; do
-  curl -s https://xxxxx.execute-api.ap-southeast-1.amazonaws.com/khong-ton-tai > /dev/null
-done
-```
-
-Sau vài phút, alarm phải chuyển sang trạng thái **In alarm** và bạn nhận được email.
+Ảnh chụp phải che credential, session token, account ID đầy đủ, dữ liệu cá nhân và thông tin billing không liên quan. Ảnh console chỉ được xem là minh chứng khi có thể xác minh tên tài nguyên, region và mối liên hệ với project này.

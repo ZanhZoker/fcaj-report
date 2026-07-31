@@ -1,82 +1,33 @@
 ---
-title : "Monitoring and alerting"
-date : 2026-07-28
-weight : 7
-chapter : false
-pre : " <b> 5.7 </b> "
+title: "Monitoring, IAM and Security"
+weight: 11
+chapter: false
+pre: " <b> 5.11 </b> "
 ---
 
-A system that runs is not a finished system. If Lambda starts failing at 2 a.m., you want to know before your users complain.
+This section separates controls confirmed in the Data Engineering source from controls that remain targets for the team application.
 
-#### Step 1. Read the logs
+#### Data Engineering controls confirmed in source
 
-Lambda writes logs to CloudWatch automatically thanks to the `AWSLambdaBasicExecutionRole` policy attached in section 5.5.
+- **CloudWatch Logs:** Lambda runtime logs provide an execution trail for each S3-triggered run. The SAM template creates the function log group with a seven-day retention period.
+- **Least-privilege IAM:** the processing function may read only from `incoming/*` and write only to `processed/*`, `rejected/*`, and `reports/*` in its data bucket.
+- **Private storage:** the S3 bucket blocks public access and uses server-side encryption with Amazon S3-managed keys.
+- **Configuration:** bucket and output prefixes are supplied through environment variables. Credentials and secrets are not stored in the repository.
+- **Failure visibility:** validation errors are written as rejected-row artifacts and summarized in JSON and Markdown quality reports. Unexpected exceptions are recorded in Lambda logs.
 
-1. Open the [CloudWatch console](https://ap-southeast-1.console.aws.amazon.com/cloudwatch/home?region=ap-southeast-1)
-2. Choose **Log groups** and find `/aws/lambda/fcj-recsys-api`
-3. Open the most recent log stream
+The repository does not confirm CloudWatch alarms, SNS topics, or email notifications, so this report does not present them as deployed resources.
 
-This is the first place to look whenever the API returns a 500. The error message sent to users is usually trimmed; the full stack trace lives here.
+#### Team application security targets
 
-#### Step 2. Create an SNS topic for notifications
+The proposal calls for HTTPS through CloudFront, a private S3 origin with Origin Access Control, authenticated API access, restricted Lambda permissions, and protected application data. The current frontend source is a browser-based prototype that uses mock data and local storage; therefore it is not evidence of production authentication, password hashing, deployed OAC, or backend monitoring.
 
-```bash
-aws sns create-topic --name fcj-recsys-alerts
-```
+Before a production release, the team should verify request authorization, input validation, password hashing, secret storage, log redaction, CORS, least-privilege access, and retention settings across the application stack.
 
-Subscribe your email:
+<!-- TODO: Team evidence - CloudFront HTTPS and private origin configuration -->
+<!-- TODO: Team evidence - application IAM roles and security review -->
+<!-- TODO: Team evidence - application logs or monitoring dashboard -->
+<!-- TODO: Personal evidence - CloudWatch execution log with sensitive values redacted -->
 
-```bash
-aws sns subscribe \
-  --topic-arn <TOPIC-ARN> \
-  --protocol email \
-  --notification-endpoint your-email@example.com
-```
+#### Evidence checklist
 
-Open your inbox and confirm the subscription.
-
-#### Step 3. Create an error-rate alarm
-
-1. Open the [CloudWatch console](https://ap-southeast-1.console.aws.amazon.com/cloudwatch/home?region=ap-southeast-1), choose **Alarms** then **Create alarm**
-2. Choose **Select metric**, go to **Lambda** then **By Function Name**
-3. Find `fcj-recsys-api`, select the **Errors** metric, choose **Select metric**
-4. Under **Conditions**:
-   - **Statistic**: Sum
-   - **Period**: 5 minutes
-   - **Threshold type**: Static
-   - **Whenever Errors is**: Greater than `5`
-5. Choose **Next**, and for notifications select the `fcj-recsys-alerts` topic
-6. Name the alarm `fcj-lambda-errors` and choose **Create alarm**
-
-![Create alarm](/images/5-Workshop/5.7/create-alarm.png)
-
-#### Step 4. Create a latency alarm
-
-Repeat the steps above but select the **Duration** metric, statistic **Average**, threshold greater than `3000` milliseconds. Name it `fcj-lambda-latency`.
-
-Rising latency is often an earlier signal than outright errors. When Lambda gradually slows down, the cause is usually an inefficient DynamoDB query or a slow Personalize response.
-
-#### Step 5. Set a cost alert
-
-This is the one people skip and later regret.
-
-1. Open the [Billing console](https://console.aws.amazon.com/billing/home#/budgets)
-2. Choose **Budgets** then **Create budget**
-3. Choose **Cost budget** and set a sensible threshold, for example 10 USD per month
-4. Add an alert at 80 percent of the threshold and enter your email
-
-{{% notice tip %}}
-A Personalize campaign bills per hour it exists. If you forget to delete it after finishing, the cost accumulates silently. A budget alert is your safety net for exactly that.
-{{% /notice %}}
-
-#### Verify the alarm works
-
-Hit a non-existent path several times to generate errors:
-
-```bash
-for i in {1..10}; do
-  curl -s https://xxxxx.execute-api.ap-southeast-1.amazonaws.com/does-not-exist > /dev/null
-done
-```
-
-After a few minutes the alarm should switch to **In alarm** and you should receive an email.
+Screenshots must hide credentials, session tokens, full account identifiers, personal data, and unrelated billing information. A console screenshot is evidence only when its resource name, region, and relationship to this project can be verified.

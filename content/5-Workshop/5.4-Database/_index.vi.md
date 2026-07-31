@@ -1,110 +1,45 @@
 ---
-title : "Tạo cơ sở dữ liệu"
-date : 2026-07-28
-weight : 4
-chapter : false
-pre : " <b> 5.4 </b> "
+title: "DynamoDB và dữ liệu ứng dụng"
+weight: 6
+chapter: false
+pre: " <b> 5.6 </b> "
 ---
 
-Hệ thống dùng 8 bảng DynamoDB. Trước khi tạo, cần hiểu một điểm khác biệt căn bản so với cơ sở dữ liệu quan hệ.
+# DynamoDB và dữ liệu ứng dụng
 
-#### Thiết kế theo mẫu truy vấn
+Proposal xác định DynamoDB là database ứng dụng. Database này không phải layout
+lưu trữ S3 của Data Engineering: DynamoDB phục vụ giao dịch commerce, còn bucket
+pipeline lưu input và artifact batch được sinh ra.
 
-Với cơ sở dữ liệu quan hệ, bạn chuẩn hoá dữ liệu trước rồi viết câu truy vấn sau. Với DynamoDB thì ngược lại: bạn xác định trước sẽ truy vấn thế nào, rồi thiết kế bảng phục vụ đúng những truy vấn đó.
+#### Các bảng ứng dụng được đề xuất
 
-Cụ thể ở đây, sáu bảng đầu chỉ cần tra theo một khoá duy nhất. Nhưng hai bảng cuối thì khác:
+| Bảng | Dữ liệu dự kiến |
+|---|---|
+| `Products` | Catalog và định danh sản phẩm |
+| `Categories` | Nhóm sản phẩm |
+| `Users` | Account; mật khẩu không được lưu plain text |
+| `Sessions` | Session xác thực hoặc trạng thái thu hồi |
+| `Carts` | Trạng thái giỏ hàng theo user |
+| `Vouchers` | Định nghĩa và hiệu lực giảm giá |
+| `Reviews` | Đánh giá sản phẩm |
+| `Orders` | Order header và line data |
 
-- **Reviews**: cần lấy *tất cả đánh giá của một sản phẩm*
-- **Orders**: cần lấy *tất cả đơn hàng của một người dùng*
+Tên bảng lấy từ proposal. Partition/sort key, index, capacity mode, retention và
+trạng thái deploy chính xác cần source hoặc ảnh từ thành viên phụ trách.
 
-Nếu chỉ dùng khoá đơn, muốn lấy các bản ghi đó phải chạy **Scan** đọc toàn bộ bảng rồi lọc. Tốn thời gian và tốn tiền vì DynamoDB tính phí theo lượng dữ liệu đọc.
+#### Tích hợp với Data Engineering
 
-Giải pháp là dùng **khoá tổ hợp** gồm khoá phân vùng và khoá sắp xếp. Khi đó chỉ cần **Query** đọc đúng phân vùng cần thiết.
+Pipeline không query hay sửa các bảng trên. Pipeline nhận export ZIP từ
+database, sau đó dùng giá trị `id` trong `Products.json` làm product lookup đáng
+tin cậy. Ranh giới này tránh phụ thuộc batch job vào credential ứng dụng hoặc
+tính sẵn sàng của live database.
 
-| Bảng | Khoá phân vùng | Khoá sắp xếp | Nội dung |
-|---|---|---|---|
-| Products | `id` | --- | Thông tin sản phẩm |
-| Categories | `id` | --- | Danh mục |
-| Users | `id` | --- | Tài khoản, mật khẩu đã băm |
-| Sessions | `token` | --- | Phiên đăng nhập |
-| Carts | `userId` | --- | Giỏ hàng |
-| Vouchers | `code` | --- | Mã giảm giá |
-| Reviews | `productId` | `id` | Đánh giá sản phẩm |
-| Orders | `userId` | `id` | Đơn hàng |
+#### Checklist tách dữ liệu
 
-#### Bước 1. Tạo bảng bằng console
+- Không upload export database người dùng vào repository báo cáo công khai.
+- Tách rõ bảng ứng dụng và prefix S3 của pipeline.
+- Giữ định danh ứng dụng trong export và gói ML sạch.
+- Ghi rõ owner, format, cadence và retention của export.
+- Dùng dữ liệu đã che hoặc synthetic trong ảnh.
 
-Làm thử một bảng trên console để hiểu giao diện:
-
-1. Mở [DynamoDB console](https://ap-southeast-1.console.aws.amazon.com/dynamodbv2/home?region=ap-southeast-1)
-2. Chọn **Create table**
-3. Điền:
-   - **Table name**: `Products`
-   - **Partition key**: `id`, kiểu **String**
-   - Bỏ trống Sort key
-   - **Table settings**: chọn **Customize settings**
-   - **Table class**: DynamoDB Standard
-   - **Capacity mode**: **On-demand**
-4. Chọn **Create table**
-
-![Tạo bảng](/images/5-Workshop/5.4/create-table.png)
-
-{{% notice note %}}
-**On-demand** nghĩa là bạn trả tiền theo số lần đọc ghi thực tế, không phải theo dung lượng đặt trước. Với dự án chưa biết lưu lượng thì đây là lựa chọn an toàn, không sợ vừa thừa tiền vừa nghẽn.
-{{% /notice %}}
-
-#### Bước 2. Tạo bảy bảng còn lại bằng CLI
-
-Tạo bảy bảng bằng tay khá mất thời gian. Dùng lệnh sau cho nhanh:
-
-```bash
-for T in Categories Users Sessions Carts Vouchers; do
-  case $T in
-    Sessions) K=token ;;
-    Carts)    K=userId ;;
-    Vouchers) K=code ;;
-    *)        K=id ;;
-  esac
-  aws dynamodb create-table --table-name $T \
-    --attribute-definitions AttributeName=$K,AttributeType=S \
-    --key-schema AttributeName=$K,KeyType=HASH \
-    --billing-mode PAY_PER_REQUEST
-done
-```
-
-Hai bảng có khoá tổ hợp tạo riêng:
-
-```bash
-aws dynamodb create-table --table-name Reviews \
-  --attribute-definitions AttributeName=productId,AttributeType=S AttributeName=id,AttributeType=S \
-  --key-schema AttributeName=productId,KeyType=HASH AttributeName=id,KeyType=RANGE \
-  --billing-mode PAY_PER_REQUEST
-
-aws dynamodb create-table --table-name Orders \
-  --attribute-definitions AttributeName=userId,AttributeType=S AttributeName=id,AttributeType=S \
-  --key-schema AttributeName=userId,KeyType=HASH AttributeName=id,KeyType=RANGE \
-  --billing-mode PAY_PER_REQUEST
-```
-
-#### Bước 3. Kiểm tra
-
-```bash
-aws dynamodb list-tables
-```
-
-Kết quả phải liệt kê đủ 8 bảng.
-
-#### Bước 4. Nạp dữ liệu mẫu
-
-Nạp danh mục và sản phẩm mẫu để hệ thống có thứ hiển thị:
-
-```bash
-cd backend
-node scripts/seed-data.mjs
-```
-
-Kiểm tra lại số bản ghi trong bảng Products:
-
-```bash
-aws dynamodb scan --table-name Products --select COUNT
-```
+<!-- TODO: Team evidence - DynamoDB tables and sanitized sample items -->

@@ -1,96 +1,37 @@
 ---
 title: "Sharing and Feedback"
-date: 2026-07-29
 weight: 7
 chapter: false
 pre: " <b> 7. </b> "
 ---
 
-#### 1. Impressions of the programme
+#### Knowledge and experience gained
 
-**Working on a real AWS account** was the biggest difference from classroom
-learning. When resources cost real money, you are forced to think before creating
-them and to remember to clean up afterwards. That habit does not form from
-exercises in a simulated environment.
+The internship connected AWS concepts with a team project that had real boundaries between user experience, application logic, data storage, data preparation, and recommendation. I learned most from the interfaces between those areas. A technically correct component can still fail the project if its identifiers, file format, or delivery process do not match the next component.
 
-**The self-study format** felt difficult at first because nobody walked me
-through each step. After a few weeks I realised this is how real work operates:
-nobody hands you step-by-step instructions, only documentation and a problem to
-solve. Reading primary documentation and diagnosing failures myself are the
-skills I will keep longest.
+My Data Engineering work improved my understanding of S3 event flows, Lambda packaging, SAM/CloudFormation, CloudWatch logs, data validation, quality reporting, and automated tests. It also reinforced a practical rule: preserve source identifiers unless the complete system has agreed on a mapping. Changing IDs locally may simplify a dataset while making recommendation results unusable by the application.
 
-**The requirement to write the workshop as a lab** initially seemed like
-paperwork. Writing it changed my mind: to guide someone else through the same
-build, you have to genuinely understand every step rather than gloss over it.
-Several things I thought I understood turned out to be gaps. This proved a far
-more effective knowledge check than self-assessment.
+#### Value of the team project
 
-#### 2. Satisfaction level
+The e-commerce project made role coordination concrete. Frontend needs stable API and product identifiers; backend and database owners define application records; Data Engineering converts exports into validated artifacts; ML consumes that contract and owns training and evaluation; cloud and testing roles help the components operate together. Seeing this end-to-end dependency was more valuable than treating each service as an isolated exercise.
 
-**Overall: 9/10 — Very satisfied.**
+The hardest periods were those in which the data requirements were implicit. Clarifying accepted filenames, schemas, event vocabulary, timestamp rules, catalogue lookups, and handoff ownership reduced rework. I would start future projects with a versioned data contract and small representative fixtures shared by all affected roles.
 
-| Aspect | Level | Reason |
-|---|---|---|
-| Course content | Very satisfied | Grounded in practice, with labs on a real account |
-| Mentor support | Satisfied | Timely help without doing the work for you |
-| Community | Very satisfied | The AWS Study Group is active and responsive |
-| Programme organisation | Satisfied | Clear about rules and deadlines |
-| Hands-on opportunity | Very satisfied | A real project to deploy rather than exercises |
+#### AWS deployment experience
 
-What I valued most is that the programme does not spoon-feed. It sets a problem
-and lets you solve it. That is harder, but it sticks.
+Preparing the pipeline for AWS showed me the difference between local success and an operable workload: permissions, event configuration, log retention, resource naming, failure outputs, and cleanup all matter. The Data Engineering README records deployment verification, but report-ready evidence is still being assembled. I therefore treat deployment evidence as a separate deliverable rather than assuming that source configuration proves a live environment.
 
-#### 3. Areas for improvement
+#### Programme feedback
 
-I offer these constructively, based on the experience of a complete beginner.
+The FCAJ structure is useful because it combines self-study, technical writing, source code, evidence, and a public bilingual report. Requiring a workshop encourages participants to explain not only what was built, but also how another person could verify and clean it up.
 
-**Hold a cost-management session at the very start.** Several people in my team
-did not know that some services bill by existence rather than by usage, for
-example a Personalize campaign. An early briefing on AWS Budgets and a list of
-services that accrue cost quietly would make people more confident about
-experimenting rather than hesitant.
+Suggested improvements:
 
-**Provide sample project ideas graded by difficulty.** When choosing a topic my
-team was unsure what scope was realistic in the time available. We initially
-planned something far larger and had to cut it back. A reference list with rough
-effort estimates would stop teams from over-scoping.
+1. Provide an early example of a cross-role data contract and evidence checklist.
+2. Include a short cost and cleanup briefing before participants create managed resources.
+3. Publish milestone-based review criteria for architecture, source, security, testing, and screenshots.
+4. Give teams an early integration checkpoint so identifier and schema mismatches are discovered sooner.
 
-**Publish a pre-submission checklist.** For example, the minimum number of
-services a workshop must use, which sections are required, and the submission
-format. I had to read the rules page several times to catch everything and nearly
-missed the monitoring and alerting section.
+#### Direction after the internship
 
-**Offer a short Hugo primer for people who have never used it.** Building the
-report website consumed a significant amount of my time on technical setup, time
-that would have been better spent on content.
-
-#### 4. Would I recommend the programme to friends
-
-**Yes, and I already have.**
-
-Three reasons I would encourage friends to join:
-
-**First, hands-on work on real infrastructure.** Most cloud courses stop at
-videos and simulated exercises. Here you create resources yourself, pay for your
-own mistakes and clean up after yourself. That experience cannot be substituted.
-
-**Second, you learn how to work rather than just what to know.** Knowledge about
-AWS services is available in documentation. But the habit of reading primary
-sources, diagnosing faults layer by layer, weighing trade-offs before deciding,
-and staying conscious of cost only forms through real exposure.
-
-**Third, you finish with something concrete to discuss in interviews.** After the
-programme I have a live system, a source repository and technical documentation
-explaining every decision. That is far more substantial than a certification line
-on a CV.
-
-I would give friends one caveat: the programme suits people ready to study
-independently. If you are used to step-by-step guidance, the first week will be a
-struggle.
-
-#### Acknowledgements
-
-I would like to thank the mentors and the AWS Study Group community for their
-support throughout the internship, and my teammates for pulling the project
-together under time pressure. This internship showed me the gap between knowing a
-technology and being able to use it, and that is what I valued most.
+I plan to continue learning AWS and Data Engineering through small, independently verified deployments. My priorities are stronger IAM and observability practices, data orchestration, Athena and analytical storage patterns, CI testing, and complete integration from application events to recommendation consumption.

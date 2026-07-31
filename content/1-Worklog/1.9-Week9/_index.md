@@ -1,49 +1,39 @@
 ---
 title: "Week 9"
-date: 2026-07-29
 weight: 9
 chapter: false
 pre: " <b> 1.9 </b> "
 ---
 
-#### Week 9 — Monitoring, testing and documentation
+#### Week 9 — Final review and submission
 
-**Dates:** 27/07 - 02/08/2026
+**Dates:** 10-14 August 2026
 
-#### Goals
+**Status:** Planned
 
-- Set up monitoring and alerting for the system
-- Test end to end from browser to model
-- Plan resource clean-up
-- Complete documentation and the internship report
+#### Objectives
 
-#### Work carried out
+- Add verified event information, complete reflection sections, and submit.
+- Review the website and clean up AWS resources that are no longer required.
 
-Created an SNS topic and subscribed an email for alerts. Set up two CloudWatch
-alarms for Lambda error rate and latency, and verified them by hitting a
-non-existent path to generate errors.
+#### Activities
 
-Tested end to end layer by layer from the inside out: DynamoDB, API, Personalize,
-then the frontend. Two checks in particular: recommendations for two different
-users must differ, and an order with a tampered price must be recalculated by the
-server.
-
-Built a prioritised clean-up checklist, putting the Personalize campaign first
-since it bills per hour it exists.
-
-Wrote the workshop documentation as a step-by-step lab and completed the
-internship report on the Hugo platform.
+Planned work includes adding event details after evidence is provided,
+finalising self-evaluation and feedback, checking links and bilingual parity,
+performing the final Hugo build, completing resource cleanup, and submitting the
+report link through the FCAJ process.
 
 #### Results
 
-- Two working alarms sending email when thresholds are exceeded
-- An 8-item end-to-end test checklist, all passing
-- Workshop documentation enabling others to rebuild the entire system
-- A complete bilingual internship report
+No result is claimed before these activities occur.
 
-#### Difficulties and how they were resolved
+#### Challenges
 
-Writing the workshop revealed several things I thought I understood but did not.
-Guiding someone else through the same build requires explaining every step rather
-than glossing over it. This turned out to be a far more effective knowledge check
-than self-assessment.
+The final review must distinguish completed work from planned work and avoid
+leaving chargeable or publicly exposed resources behind.
+
+#### Next steps
+
+Submit only after the checklist, build, privacy review, and cleanup are complete.
+
+<!-- TODO: Add verified event information and final submission evidence -->

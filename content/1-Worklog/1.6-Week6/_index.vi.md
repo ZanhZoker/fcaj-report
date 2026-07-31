@@ -1,44 +1,41 @@
 ---
 title: "Tuần 6"
-date: 2026-07-29
 weight: 6
 chapter: false
 pre: " <b> 1.6 </b> "
 ---
 
-#### Tuần 6 — Tích hợp giao diện với API thật
+#### Tuần 6 — Đồng bộ với export thực tế
 
-**Thời gian:** 06/07 - 12/07/2026
+**Thời gian:** 20-26/07/2026
+
+**Trạng thái:** Hoàn thành
 
 #### Mục tiêu
 
-- Nối toàn bộ giao diện React với API thật
-- Xử lý lệch hợp đồng dữ liệu giữa giao diện và máy chủ
-- Triển khai giao diện lên S3 và CloudFront
-- Kiểm tra các luồng nghiệp vụ đầu cuối
+- Đồng bộ xử lý với data contract của export đã xác nhận.
+- Cập nhật automated tests và tài liệu kỹ thuật.
 
-#### Công việc đã thực hiện
+#### Hoạt động
 
-Trong quá trình tích hợp phát hiện giao diện và máy chủ được phát triển song song
-nên hợp đồng dữ liệu lệch nhau ở nhiều điểm: phương thức thanh toán, trạng thái
-đơn hàng, tên trường giá và mã giảm giá đều khác nhau.
+Tôi giới hạn xử lý ở `interactions.csv`, đọc trường `id` của `Products.json` để
+validation và bỏ qua `items.csv` một cách tường minh. Pipeline giữ `USER_ID` và
+`ITEM_ID` dưới dạng chuỗi, loại product không hợp lệ và exact duplicate, không
+sinh surrogate ID. Tôi cập nhật bộ test và tài liệu chạy local/AWS.
 
-Cân nhắc ba phương án: sửa máy chủ, sửa giao diện, hoặc chèn lớp trung gian. Chọn
-phương án thứ ba vì giữ nguyên được phần đã kiểm thử của cả hai bên. Toàn bộ việc
-chuyển đổi được tập trung vào một file duy nhất, dịch dữ liệu theo cả hai chiều.
+#### Kết quả
 
-Build giao diện, tải lên S3 và tạo invalidation cho CloudFront. Kiểm tra các
-luồng: đăng ký, đăng nhập, duyệt sản phẩm, thêm giỏ, áp mã giảm giá, đặt hàng,
-xem lịch sử đơn.
+- Report hiện tại: 23.377 input/clean rows, 0 rejected, 0 duplicate.
+- 200 user duy nhất, 100 item duy nhất và trạng thái bảo toàn ID `PASS`.
+- User ID sinh mới: 0; item ID sinh mới: 0.
 
-#### Kết quả đạt được
+#### Khó khăn
 
-- Website hoàn chỉnh chạy trên CloudFront với đầy đủ luồng nghiệp vụ
-- Lớp trung gian xử lý lệch hợp đồng, ranh giới giữa hai tầng trở nên tường minh
-- Máy chủ tính lại tổng tiền phía server, không tin dữ liệu từ trình duyệt
+Giả định cũ về `items.csv` mâu thuẫn với export ứng dụng thật. Xem data contract
+như tài liệu kỹ thuật có phiên bản giúp thay đổi này trở nên rõ ràng và có thể
+kiểm thử.
 
-#### Khó khăn và cách xử lý
+#### Bước tiếp theo
 
-Khối lượng công việc để nối các phần do nhiều người viết lớn hơn nhiều so với dự
-tính. Bài học rút ra là hợp đồng dữ liệu giữa các tầng cần được thống nhất bằng
-văn bản ngay từ đầu, trước khi bất kỳ bên nào bắt đầu viết mã.
+Hoàn thiện source, rà soát automated tests, chuẩn bị triển khai AWS và minh chứng
+báo cáo.

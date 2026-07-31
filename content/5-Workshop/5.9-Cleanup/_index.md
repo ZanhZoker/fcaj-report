@@ -1,117 +1,38 @@
 ---
-title : "Clean up"
-date : 2026-07-28
-weight : 9
-chapter : false
-pre : " <b> 5.9 </b> "
+title: "Resource Cleanup"
+weight: 13
+chapter: false
+pre: " <b> 5.13 </b> "
 ---
 
 {{% notice warning %}}
-Do this **immediately after finishing the workshop**. A Personalize campaign bills per hour it exists; forgetting to delete it means your bill quietly grows every day.
+Deletion is irreversible. Before running any command, confirm the AWS account, region, stack name, bucket name, and retained evidence. Replace every placeholder with a value verified in the console; never run a destructive command against a guessed resource.
 {{% /notice %}}
 
-#### Deletion order
+#### Data Engineering stack
 
-Order matters because resources depend on each other. Follow the list below, starting with the most expensive.
-
-#### Step 1. Delete the campaign --- highest priority
+The SAM-managed resources should normally be removed through the stack so CloudFormation can respect dependencies:
 
 ```bash
-aws personalize delete-campaign --campaign-arn <CAMPAIGN-ARN>
+sam delete --stack-name <verified-data-pipeline-stack> --region <verified-region>
 ```
 
-Or in the console: **Personalize** → **Campaigns** → select the campaign → **Delete**.
+Before stack deletion, inspect and retain only the required non-sensitive artifacts. If the bucket contains objects that block deletion, review the exact bucket and object list before emptying it. Confirm that the S3 bucket, processing Lambda, IAM role, event notification, and CloudWatch log group no longer exist after deletion. Remove Athena query-result objects separately if Athena was used.
 
-Wait for the status to become **Delete pending** and then disappear from the list.
+#### Team application resources
 
-#### Step 2. Delete the solution and dataset group
+The responsible team members should inventory and remove only resources actually created for the project:
 
-These must be deleted in this exact order, otherwise you get dependency errors:
+1. Remove Amazon Personalize campaigns/recommenders and dependent solution versions or datasets after the ML owner confirms they are no longer needed.
+2. Disable and delete the verified CloudFront distribution when it is no longer serving the demo.
+3. Review and remove application S3 objects and buckets.
+4. Remove the application API Gateway, Lambda functions, and their log groups through the owning stack when possible.
+5. Export any required records, then remove the verified DynamoDB tables.
+6. Review IAM roles and policies created specifically for the project.
+7. Check the region's resource inventory and billing view for remaining chargeable resources.
 
-```bash
-# Delete the solution first
-aws personalize delete-solution --solution-arn <SOLUTION-ARN>
+This is a procedure, not a statement that cleanup has already occurred.
 
-# Wait for it to disappear, then delete the dataset
-aws personalize delete-dataset --dataset-arn <DATASET-ARN>
-
-# Finally delete the dataset group
-aws personalize delete-dataset-group --dataset-group-arn <DSG-ARN>
-```
-
-{{% notice note %}}
-If the solution has **automatic retraining** enabled, turn it off before deleting, otherwise it may kick off a new training run and incur cost.
-{{% /notice %}}
-
-#### Step 3. Delete the CloudFront distribution
-
-CloudFront will not delete an enabled distribution, so disable it first.
-
-1. Open the [CloudFront console](https://console.aws.amazon.com/cloudfront/v4/home)
-2. Select the distribution and choose **Disable**
-3. Wait roughly 15 minutes for the status to return to **Deployed**
-4. Select the distribution again and choose **Delete**
-
-#### Step 4. Delete the S3 buckets
-
-A bucket must be empty before it can be deleted:
-
-```bash
-aws s3 rm s3://fcj-recsys-frontend-<your-name> --recursive
-aws s3 rb s3://fcj-recsys-frontend-<your-name>
-
-aws s3 rm s3://fcj-recsys-data-<your-name> --recursive
-aws s3 rb s3://fcj-recsys-data-<your-name>
-```
-
-#### Step 5. Delete API Gateway and Lambda
-
-```bash
-aws apigatewayv2 delete-api --api-id <API-ID>
-aws lambda delete-function --function-name fcj-recsys-api
-```
-
-#### Step 6. Delete the DynamoDB tables
-
-```bash
-for T in Products Categories Users Sessions Carts Vouchers Reviews Orders; do
-  aws dynamodb delete-table --table-name $T
-done
-```
-
-#### Step 7. Delete the IAM role and alarms
-
-```bash
-aws iam delete-role-policy --role-name fcj-recsys-lambda-role --policy-name fcj-recsys-lambda-policy
-aws iam detach-role-policy --role-name fcj-recsys-lambda-role \
-  --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-aws iam delete-role --role-name fcj-recsys-lambda-role
-
-aws cloudwatch delete-alarms --alarm-names fcj-lambda-errors fcj-lambda-latency
-```
-
-#### Step 8. Final sweep
-
-Do not rely on memory. Verify through the Billing console:
-
-1. Open the [Billing console](https://console.aws.amazon.com/billing/home)
-2. Choose **Bills** and check whether any service is still accruing cost
-3. Cross-check with [Resource Groups](https://console.aws.amazon.com/resource-groups/) to find leftovers
-
-{{% notice tip %}}
-Keeping the **CloudWatch log group** is fine; logs are cheap and can be useful later. If you want a completely clean account, delete it from the CloudWatch console too.
-{{% /notice %}}
-
-#### Clean-up checklist
-
-| Resource | Deleted |
-|---|---|
-| Personalize campaign | ☐ |
-| Personalize solution and dataset group | ☐ |
-| CloudFront distribution | ☐ |
-| Both S3 buckets | ☐ |
-| API Gateway | ☐ |
-| Lambda function | ☐ |
-| Eight DynamoDB tables | ☐ |
-| IAM role | ☐ |
-| CloudWatch alarms | ☐ |
+<!-- TODO: Team evidence - resource inventory before cleanup -->
+<!-- TODO: Team evidence - resource inventory after cleanup -->
+<!-- TODO: Personal evidence - SAM stack deletion or confirmed retained environment -->

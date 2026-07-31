@@ -1,41 +1,38 @@
 ---
 title: "Tuần 2"
-date: 2026-07-29
 weight: 2
 chapter: false
 pre: " <b> 1.2 </b> "
 ---
 
-#### Tuần 2 — Kiến trúc không máy chủ
+#### Tuần 2 — Phân tích hệ thống và dữ liệu
 
-**Thời gian:** 08/06 - 14/06/2026
+**Thời gian:** 22-28/06/2026
+
+**Trạng thái:** Hoàn thành
 
 #### Mục tiêu
 
-- Hiểu mô hình tính toán không máy chủ và khi nào nên dùng
-- Triển khai được hàm Lambda đầu tiên
-- Nối Lambda với API Gateway để tạo endpoint gọi được từ Internet
-- Làm quen với DynamoDB và mô hình dữ liệu NoSQL
+- Làm rõ trách nhiệm frontend, backend, ML, cloud và data.
+- Hiểu dữ liệu user, product và interaction phục vụ recommendation.
 
-#### Công việc đã thực hiện
+#### Hoạt động
 
-Viết và triển khai hàm Lambda đơn giản bằng Node.js, thử nghiệm với các mức
-timeout và bộ nhớ khác nhau để quan sát ảnh hưởng.
+Tôi phân tích proposal của nhóm và source frontend, sau đó đối chiếu luồng ứng
+dụng dự kiến với dữ liệu cần bàn giao downstream. Nhu cầu tích hợp quan trọng là
+dataset interaction bốn cột, trong đó định danh user và item vẫn khớp hệ thống
+nguồn.
 
-Tạo HTTP API trên API Gateway, nối với Lambda và gọi thử bằng `curl`. Tìm hiểu
-cấu trúc sự kiện mà API Gateway gửi sang Lambda.
+#### Kết quả
 
-Tạo bảng DynamoDB đầu tiên, thực hành các thao tác PutItem, GetItem, Query và
-Scan. So sánh chi phí và tốc độ giữa Query và Scan trên cùng một bảng.
+- Xác định bốn trường logic `USER_ID`, `ITEM_ID`, `EVENT_TYPE`, `TIMESTAMP`.
+- Ghi nhận mã sản phẩm cần được đối chiếu với nguồn dữ liệu ứng dụng đáng tin cậy.
 
-#### Kết quả đạt được
+#### Khó khăn
 
-- Triển khai được một API hoàn chỉnh chạy trên Internet, không cần máy chủ
-- Hiểu được sự khác biệt căn bản giữa Query và Scan trong DynamoDB
-- Nhận ra thiết kế bảng NoSQL phải đi theo mẫu truy vấn, không phải chuẩn hoá
+Proposal mô tả nhiều thành phần cloud hơn những gì source ứng dụng hiện có xác
+nhận. Tôi tách rõ ý định thiết kế và bằng chứng triển khai.
 
-#### Khó khăn và cách xử lý
+#### Bước tiếp theo
 
-Gặp khó khi Lambda gọi DynamoDB nhưng báo lỗi không đủ quyền. Sau khi đọc lại
-tài liệu mới hiểu Lambda dùng execution role chứ không dùng credential của người
-tạo. Đây là lần đầu em thấy IAM có tác dụng thực tế chứ không chỉ là lý thuyết.
+Thiết kế ingestion, validation, vùng output và hợp đồng bàn giao cho ML.

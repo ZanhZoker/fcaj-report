@@ -1,106 +1,52 @@
 ---
-title : "Triển khai lớp giao diện"
-date : 2026-07-28
-weight : 3
-chapter : false
-pre : " <b> 5.3 </b> "
+title: "Frontend và CloudFront"
+weight: 4
+chapter: false
+pre: " <b> 5.4 </b> "
 ---
 
-Trong phần này bạn tạo nơi lưu và nơi phân phối giao diện web. Bucket S3 giữ file, CloudFront đưa file đó tới người dùng.
+# Frontend và CloudFront
 
-Điểm cần chú ý: bucket sẽ được để **riêng tư hoàn toàn**. Người dùng không truy cập thẳng vào S3 mà chỉ đi qua CloudFront. Cơ chế cho phép điều này gọi là **Origin Access Control**.
+Repository nhóm xác nhận ứng dụng một trang React/Vite sử dụng React Router,
+Redux Toolkit và các UI component tái sử dụng. Source route bao gồm homepage,
+category, text search, product detail, cart, checkout, account, seller,
+notification và administration.
 
-#### Bước 1. Tạo bucket lưu giao diện
+#### Hành vi source hiện tại
 
-1. Mở [Amazon S3 console](https://s3.console.aws.amazon.com/s3/home?region=ap-southeast-1)
-2. Chọn **Create bucket**
-3. Điền thông tin:
-   - **Bucket name**: `fcj-recsys-frontend-<tên-bạn>` (tên bucket là duy nhất toàn cầu, thêm hậu tố để tránh trùng)
-   - **AWS Region**: Asia Pacific (Singapore) `ap-southeast-1`
-   - **Block Public Access**: **giữ nguyên bật tất cả**
-4. Chọn **Create bucket**
+- Product, account, cart, voucher và order dùng mock data local.
+- Mock API mô phỏng độ trễ và lưu dữ liệu trong local storage của trình duyệt.
+- Khối recommendation ở homepage chọn một lát cắt product tĩnh.
+- Search dựa trên text; source này chưa có CLIP visual search.
 
-![Tạo bucket](/images/5-Workshop/5.3/create-bucket.png)
+Vì vậy frontend là UI prototype hữu ích nhưng không được mô tả như đã tích hợp
+backend hoặc Personalize thật.
 
-{{% notice note %}}
-Nhiều hướng dẫn cũ bảo bật Static website hosting và mở public cho bucket. Cách đó không còn được khuyến nghị vì lộ bucket ra Internet. Ở workshop này ta giữ bucket kín và để CloudFront làm cửa duy nhất.
-{{% /notice %}}
+#### Mục tiêu phân phối trên AWS
 
-#### Bước 2. Build giao diện
+Proposal đặt output `dist/` của Vite trong bucket S3 private và dùng CloudFront
+cho HTTPS cùng caching. CloudFront Origin Access Control (OAC) là mục tiêu phù
+hợp để người dùng không truy cập thẳng bucket. Client-side route cũng cần SPA
+fallback về `index.html`.
 
-Tại máy của bạn, vào thư mục `frontend` và build:
-
-```bash
-cd frontend
+```powershell
 npm install
 npm run build
+aws s3 sync .\dist "s3://<FRONTEND_BUCKET>/" --delete
+aws cloudfront create-invalidation --distribution-id <DISTRIBUTION_ID> --paths "/*"
 ```
 
-Lệnh này tạo ra thư mục `dist` chứa toàn bộ file tĩnh.
-
-{{% notice tip %}}
-Chưa cần lo địa chỉ API lúc này. Sau khi tạo xong API Gateway ở mục 5.5, bạn sẽ quay lại đặt biến `VITE_API_BASE_URL` rồi build lại.
-{{% /notice %}}
-
-#### Bước 3. Tải file lên S3
-
-```bash
-aws s3 sync dist/ s3://fcj-recsys-frontend-<tên-bạn>/ --delete
-```
-
-Tham số `--delete` xoá những file cũ không còn trong bản build mới, tránh để lại rác qua nhiều lần deploy.
-
-Kiểm tra lại trên console, bucket phải có `index.html` cùng thư mục `assets`.
-
-#### Bước 4. Tạo CloudFront distribution
-
-1. Mở [CloudFront console](https://console.aws.amazon.com/cloudfront/v4/home)
-2. Chọn **Create distribution**
-3. Ở phần **Origin**:
-   - **Origin domain**: chọn bucket vừa tạo từ danh sách
-   - **Origin access**: chọn **Origin access control settings (recommended)**
-   - Chọn **Create new OAC**, giữ nguyên tuỳ chọn mặc định, bấm **Create**
-4. Ở phần **Default cache behavior**:
-   - **Viewer protocol policy**: **Redirect HTTP to HTTPS**
-   - **Allowed HTTP methods**: `GET, HEAD`
-5. Ở phần **Settings**:
-   - **Default root object**: `index.html`
-6. Chọn **Create distribution**
-
-![Tạo distribution](/images/5-Workshop/5.3/create-distribution.png)
-
-#### Bước 5. Cấp quyền cho CloudFront đọc bucket
-
-Sau khi tạo xong, CloudFront hiện một banner nhắc cập nhật bucket policy. Chọn **Copy policy**, rồi:
-
-1. Sang [S3 console](https://s3.console.aws.amazon.com/s3/home?region=ap-southeast-1), mở bucket
-2. Vào tab **Permissions**
-3. Ở mục **Bucket policy**, chọn **Edit**, dán policy vừa copy, chọn **Save changes**
-
-Policy này chỉ cho phép đúng distribution vừa tạo đọc bucket, không mở cho ai khác.
-
-#### Bước 6. Xử lý lỗi 403 với ứng dụng một trang
-
-Giao diện React dùng định tuyến phía client. Khi người dùng mở thẳng `/cart`, CloudFront đi tìm file tên `cart` trong S3, không thấy nên trả về lỗi. Cần chuyển các lỗi đó về `index.html`.
-
-1. Trong distribution, mở tab **Error pages**
-2. Chọn **Create custom error response**, khai báo:
-   - **HTTP error code**: `403 Forbidden`
-   - **Customize error response**: Yes
-   - **Response page path**: `/index.html`
-   - **HTTP Response code**: `200 OK`
-3. Lặp lại một lần nữa cho mã lỗi `404 Not Found`
+Các lệnh là quy trình triển khai, không phải bằng chứng resource đã tồn tại. Chỉ
+thay placeholder khi thành viên phụ trách xác nhận tên resource thật.
 
 #### Kiểm tra
 
-Chờ khoảng 5 phút cho distribution chuyển sang trạng thái **Deployed**, sau đó mở địa chỉ ở cột **Distribution domain name**, dạng `dxxxxxxxxx.cloudfront.net`.
+- Build frontend thành công.
+- Mở các route home, product, category, search, cart, checkout và account.
+- Kiểm tra direct SPA path qua CloudFront.
+- Xác nhận S3 origin không public nếu dùng OAC.
+- Chỉ xác nhận browser dùng API mục tiêu sau khi tích hợp tồn tại.
 
-Giao diện phải hiển thị được. Phần dữ liệu sản phẩm chưa có vì API chưa tạo, điều đó bình thường.
-
-{{% notice warning %}}
-**Ghi nhớ điều này, nó sẽ tiết kiệm cho bạn hàng giờ.** Mỗi lần tải bản build mới lên S3, bạn **bắt buộc** phải tạo invalidation, nếu không CloudFront vẫn phục vụ bản cũ trong bộ nhớ đệm và bạn sẽ tưởng mã nguồn bị lỗi.
-
-```bash
-aws cloudfront create-invalidation --distribution-id <ID-CUA-BAN> --paths "/*"
-```
-{{% /notice %}}
+<!-- TODO: Team evidence - deployed CloudFront website -->
+<!-- TODO: Team evidence - homepage and product browsing -->
+<!-- TODO: Team evidence - recommendation section -->

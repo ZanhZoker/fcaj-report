@@ -1,108 +1,297 @@
 ---
-title: "Bản đề xuất"
-date: 2024-01-01
+title: "Đề xuất"
 weight: 2
 chapter: false
 pre: " <b> 2. </b> "
 ---
-{{% notice warning %}}
-⚠️ **Lưu ý:** Các thông tin dưới đây chỉ nhằm mục đích tham khảo, vui lòng **không sao chép nguyên văn** cho bài báo cáo của bạn kể cả warning này.
-{{% /notice %}}
 
-Tại phần này, bạn cần tóm tắt các nội dung trong workshop mà bạn **dự tính** sẽ làm.
+# Hệ thống thương mại điện tử tích hợp gợi ý và tìm kiếm hình ảnh trên AWS
 
-# IoT Weather Platform for Lab Research  
-## Giải pháp AWS Serverless hợp nhất cho giám sát thời tiết thời gian thực  
+## 1. Tóm tắt điều hành
 
-### 1. Tóm tắt điều hành  
-IoT Weather Platform được thiết kế dành cho nhóm *ITea Lab* tại TP. Hồ Chí Minh nhằm nâng cao khả năng thu thập và phân tích dữ liệu thời tiết. Nền tảng hỗ trợ tối đa 5 trạm thời tiết, có khả năng mở rộng lên 10–15 trạm, sử dụng thiết bị biên Raspberry Pi kết hợp cảm biến ESP32 để truyền dữ liệu qua MQTT. Nền tảng tận dụng các dịch vụ AWS Serverless để cung cấp giám sát thời gian thực, phân tích dự đoán và tiết kiệm chi phí, với quyền truy cập giới hạn cho 5 thành viên phòng lab thông qua Amazon Cognito.  
+Project nhóm đề xuất nền tảng thương mại điện tử có duyệt sản phẩm, tài khoản,
+giỏ hàng, thanh toán, gợi ý và tìm kiếm bằng hình ảnh. Kiến trúc AWS mục tiêu sử
+dụng frontend React/Vite, Amazon S3 và CloudFront để phân phối, API Gateway và
+application Lambda cho nghiệp vụ, DynamoDB cho dữ liệu ứng dụng và Amazon
+Personalize cho recommendation. Proposal cũng mô tả visual search dựa trên CLIP.
 
-### 2. Tuyên bố vấn đề  
-*Vấn đề hiện tại*  
-Các trạm thời tiết hiện tại yêu cầu thu thập dữ liệu thủ công, khó quản lý khi có nhiều trạm. Không có hệ thống tập trung cho dữ liệu hoặc phân tích thời gian thực, và các nền tảng bên thứ ba thường tốn kém và quá phức tạp.  
+Bằng chứng triển khai giữa các thành phần chưa đồng đều. Repository nhóm hiện có
+xác nhận prototype React/Vite chạy với mock data trong trình duyệt. Repository
+Data Engineering xác nhận pipeline Python riêng, automated tests, quality report
+và hạ tầng AWS SAM. Backend ứng dụng, DynamoDB, Personalize, CLIP và triển khai
+toàn hệ thống vẫn cần source hoặc ảnh từ thành viên phụ trách trước khi ghi là đã
+hoàn thành.
 
-*Giải pháp*  
-Nền tảng sử dụng AWS IoT Core để tiếp nhận dữ liệu MQTT, AWS Lambda và API Gateway để xử lý, Amazon S3 để lưu trữ (bao gồm data lake), và AWS Glue Crawlers cùng các tác vụ ETL để trích xuất, chuyển đổi, tải dữ liệu từ S3 data lake sang một S3 bucket khác để phân tích. AWS Amplify với Next.js cung cấp giao diện web, và Amazon Cognito đảm bảo quyền truy cập an toàn. Tương tự như Thingsboard và CoreIoT, người dùng có thể đăng ký thiết bị mới và quản lý kết nối, nhưng nền tảng này hoạt động ở quy mô nhỏ hơn và phục vụ mục đích sử dụng nội bộ. Các tính năng chính bao gồm bảng điều khiển thời gian thực, phân tích xu hướng và chi phí vận hành thấp.  
+## 2. Tuyên bố vấn đề
 
-*Lợi ích và hoàn vốn đầu tư (ROI)*  
-Giải pháp tạo nền tảng cơ bản để các thành viên phòng lab phát triển một nền tảng IoT lớn hơn, đồng thời cung cấp nguồn dữ liệu cho những người nghiên cứu AI phục vụ huấn luyện mô hình hoặc phân tích. Nền tảng giảm bớt báo cáo thủ công cho từng trạm thông qua hệ thống tập trung, đơn giản hóa quản lý và bảo trì, đồng thời cải thiện độ tin cậy dữ liệu. Chi phí hàng tháng ước tính 0,66 USD (theo AWS Pricing Calculator), tổng cộng 7,92 USD cho 12 tháng. Tất cả thiết bị IoT đã được trang bị từ hệ thống trạm thời tiết hiện tại, không phát sinh chi phí phát triển thêm. Thời gian hoàn vốn 6–12 tháng nhờ tiết kiệm đáng kể thời gian thao tác thủ công.  
+Một hệ thống e-commerce phải hỗ trợ luồng mua sắm thông thường, đồng thời giúp
+người dùng tìm sản phẩm phù hợp. Giai đoạn recommendation phụ thuộc vào dữ liệu
+interaction còn hợp lệ qua các ranh giới hệ thống. Nếu định danh user hoặc
+product bị thay thế khi chuẩn bị dữ liệu, output của model không thể liên kết an
+toàn về catalog ứng dụng.
 
-### 3. Kiến trúc giải pháp  
-Nền tảng áp dụng kiến trúc AWS Serverless để quản lý dữ liệu từ 5 trạm dựa trên Raspberry Pi, có thể mở rộng lên 15 trạm. Dữ liệu được tiếp nhận qua AWS IoT Core, lưu trữ trong S3 data lake và xử lý bởi AWS Glue Crawlers và ETL jobs để chuyển đổi và tải vào một S3 bucket khác cho mục đích phân tích. Lambda và API Gateway xử lý bổ sung, trong khi Amplify với Next.js cung cấp bảng điều khiển được bảo mật bởi Cognito.  
+Project vì vậy giải quyết hai bài toán liên kết: xây dựng trải nghiệm mua sắm đầu
+cuối và thiết lập quy trình bàn giao dữ liệu đáng tin cậy từ export ứng dụng sang
+workflow Machine Learning.
 
-![IoT Weather Station Architecture](/images/2-Proposal/edge_architecture.jpeg)
+## 3. Giải pháp đề xuất
 
-![IoT Weather Platform Architecture](/images/2-Proposal/platform_architecture.jpeg)
+Giải pháp mục tiêu gồm bốn lớp phối hợp:
 
-*Dịch vụ AWS sử dụng*  
-- *AWS IoT Core*: Tiếp nhận dữ liệu MQTT từ 5 trạm, mở rộng lên 15.  
-- *AWS Lambda*: Xử lý dữ liệu và kích hoạt Glue jobs (2 hàm).  
-- *Amazon API Gateway*: Giao tiếp với ứng dụng web.  
-- *Amazon S3*: Lưu trữ dữ liệu thô (data lake) và dữ liệu đã xử lý (2 bucket).  
-- *AWS Glue*: Crawlers lập chỉ mục dữ liệu, ETL jobs chuyển đổi và tải dữ liệu.  
-- *AWS Amplify*: Lưu trữ giao diện web Next.js.  
-- *Amazon Cognito*: Quản lý quyền truy cập cho người dùng phòng lab.  
+1. Ứng dụng React/Vite cho catalog, search, account, cart, checkout, seller,
+   notification và administration.
+2. Lớp ứng dụng serverless được đề xuất với API Gateway, Lambda và DynamoDB.
+3. Pipeline Data Engineering đã có source dùng S3, Lambda, CloudWatch Logs và
+   SAM/CloudFormation để tạo dataset interaction sẵn sàng cho ML.
+4. Lớp ML được đề xuất với Amazon Personalize và visual search CLIP, tích hợp
+   ngược vào ứng dụng qua backend API.
 
-*Thiết kế thành phần*  
-- *Thiết bị biên*: Raspberry Pi thu thập và lọc dữ liệu cảm biến, gửi tới IoT Core.  
-- *Tiếp nhận dữ liệu*: AWS IoT Core nhận tin nhắn MQTT từ thiết bị biên.  
-- *Lưu trữ dữ liệu*: Dữ liệu thô lưu trong S3 data lake; dữ liệu đã xử lý lưu ở một S3 bucket khác.  
-- *Xử lý dữ liệu*: AWS Glue Crawlers lập chỉ mục dữ liệu; ETL jobs chuyển đổi để phân tích.  
-- *Giao diện web*: AWS Amplify lưu trữ ứng dụng Next.js cho bảng điều khiển và phân tích thời gian thực.  
-- *Quản lý người dùng*: Amazon Cognito giới hạn 5 tài khoản hoạt động.  
+## 4. Lợi ích
 
-### 4. Triển khai kỹ thuật  
-*Các giai đoạn triển khai*  
-Dự án gồm 2 phần — thiết lập trạm thời tiết biên và xây dựng nền tảng thời tiết — mỗi phần trải qua 4 giai đoạn:  
-1. *Nghiên cứu và vẽ kiến trúc*: Nghiên cứu Raspberry Pi với cảm biến ESP32 và thiết kế kiến trúc AWS Serverless (1 tháng trước kỳ thực tập).  
-2. *Tính toán chi phí và kiểm tra tính khả thi*: Sử dụng AWS Pricing Calculator để ước tính và điều chỉnh (Tháng 1).  
-3. *Điều chỉnh kiến trúc để tối ưu chi phí/giải pháp*: Tinh chỉnh (ví dụ tối ưu Lambda với Next.js) để đảm bảo hiệu quả (Tháng 2).  
-4. *Phát triển, kiểm thử, triển khai*: Lập trình Raspberry Pi, AWS services với CDK/SDK và ứng dụng Next.js, sau đó kiểm thử và đưa vào vận hành (Tháng 2–3).  
+- **Khám phá sản phẩm:** recommendation và visual search giúp vượt giới hạn tìm
+  kiếm từ khóa cơ bản.
+- **Rõ trách nhiệm:** contract giữa các thành phần cho phép frontend, backend,
+  data, cloud và ML phối hợp ở các điểm bàn giao cụ thể.
+- **Vận hành serverless:** managed services giảm nhu cầu quản lý server thường
+  trực, phù hợp lưu lượng thấp hoặc không đều.
+- **Chất lượng dữ liệu kiểm tra được:** clean, rejected và report artifact cho
+  phép audit từng batch trước khi đưa vào ML.
+- **Giữ liên kết nguồn:** bảo toàn ID giúp kết quả gợi ý ánh xạ về đúng user và
+  product trong ứng dụng.
 
-*Yêu cầu kỹ thuật*  
-- *Trạm thời tiết biên*: Cảm biến (nhiệt độ, độ ẩm, lượng mưa, tốc độ gió), vi điều khiển ESP32, Raspberry Pi làm thiết bị biên. Raspberry Pi chạy Raspbian, sử dụng Docker để lọc dữ liệu và gửi 1 MB/ngày/trạm qua MQTT qua Wi-Fi.  
-- *Nền tảng thời tiết*: Kiến thức thực tế về AWS Amplify (lưu trữ Next.js), Lambda (giảm thiểu do Next.js xử lý), AWS Glue (ETL), S3 (2 bucket), IoT Core (gateway và rules), và Cognito (5 người dùng). Sử dụng AWS CDK/SDK để lập trình (ví dụ IoT Core rules tới S3). Next.js giúp giảm tải Lambda cho ứng dụng web fullstack.  
+## 5. Kiến trúc tổng thể
 
-### 5. Lộ trình & Mốc triển khai  
-- *Trước thực tập (Tháng 0)*: 1 tháng lên kế hoạch và đánh giá trạm cũ.  
-- *Thực tập (Tháng 1–3)*:  
-    - Tháng 1: Học AWS và nâng cấp phần cứng.  
-    - Tháng 2: Thiết kế và điều chỉnh kiến trúc.  
-    - Tháng 3: Triển khai, kiểm thử, đưa vào sử dụng.  
-- *Sau triển khai*: Nghiên cứu thêm trong vòng 1 năm.  
+![Kiến trúc mục tiêu của nhóm](/images/5-Workshop/architecture.png)
 
-### 6. Ước tính ngân sách  
-Có thể xem chi phí trên [AWS Pricing Calculator](https://calculator.aws/#/estimate?id=621f38b12a1ef026842ba2ddfe46ff936ed4ab01)  
-Hoặc tải [tệp ước tính ngân sách](../attachments/budget_estimation.pdf).  
+Hình trên là kiến trúc tham chiếu của nhóm, không phải bằng chứng triển khai.
+Luồng ứng dụng dự kiến:
 
-*Chi phí hạ tầng*  
-- AWS Lambda: 0,00 USD/tháng (1.000 request, 512 MB lưu trữ).  
-- S3 Standard: 0,15 USD/tháng (6 GB, 2.100 request, 1 GB quét).  
-- Truyền dữ liệu: 0,02 USD/tháng (1 GB vào, 1 GB ra).  
-- AWS Amplify: 0,35 USD/tháng (256 MB, request 500 ms).  
-- Amazon API Gateway: 0,01 USD/tháng (2.000 request).  
-- AWS Glue ETL Jobs: 0,02 USD/tháng (2 DPU).  
-- AWS Glue Crawlers: 0,07 USD/tháng (1 crawler).  
-- MQTT (IoT Core): 0,08 USD/tháng (5 thiết bị, 45.000 tin nhắn).  
+```text
+Người dùng → CloudFront → S3 frontend → API Gateway → application Lambda
+           → DynamoDB / Amazon Personalize → phản hồi gợi ý
+```
 
-*Tổng*: 0,7 USD/tháng, 8,40 USD/12 tháng  
-- *Phần cứng*: 265 USD một lần (Raspberry Pi 5 và cảm biến).  
+Luồng Data Engineering:
 
-### 7. Đánh giá rủi ro  
-*Ma trận rủi ro*  
-- Mất mạng: Ảnh hưởng trung bình, xác suất trung bình.  
-- Hỏng cảm biến: Ảnh hưởng cao, xác suất thấp.  
-- Vượt ngân sách: Ảnh hưởng trung bình, xác suất thấp.  
+```text
+Database export ZIP → S3 incoming/ → data-processing Lambda
+→ processed/ + rejected/ + reports/ → interactions_clean.csv
+→ Machine Learning / Amazon Personalize downstream
+```
 
-*Chiến lược giảm thiểu*  
-- Mạng: Lưu trữ cục bộ trên Raspberry Pi với Docker.  
-- Cảm biến: Kiểm tra định kỳ, dự phòng linh kiện.  
-- Chi phí: Cảnh báo ngân sách AWS, tối ưu dịch vụ.  
+## 6. Dịch vụ AWS và công nghệ
 
-*Kế hoạch dự phòng*  
-- Quay lại thu thập thủ công nếu AWS gặp sự cố.  
-- Sử dụng CloudFormation để khôi phục cấu hình liên quan đến chi phí.  
+| Thành phần | Mục đích | Trạng thái bằng chứng |
+|---|---|---|
+| React, Vite, Redux Toolkit | Trải nghiệm web của nhóm | Có trong source frontend |
+| Mock API và local storage | Lớp dữ liệu prototype hiện tại | Có trong source frontend |
+| S3 và CloudFront | Static hosting và HTTPS mục tiêu | Proposal; chờ minh chứng nhóm |
+| API Gateway và application Lambda | API serverless và nghiệp vụ mục tiêu | Proposal; chờ source ứng dụng |
+| DynamoDB | Kho dữ liệu ứng dụng mục tiêu | Thiết kế tám bảng trong proposal; chờ source |
+| S3 và data-processing Lambda | Input/output và compute cho pipeline | Có trong source Data Engineering |
+| CloudWatch Logs | Log thực thi pipeline | Có trong SAM template và trạng thái repository |
+| SAM/CloudFormation | Infrastructure as Code cho pipeline | Có trong `template.yaml` |
+| Athena | Xác minh clean CSV tùy chọn | Đã có SQL; chờ minh chứng thực thi |
+| Amazon Personalize | Train và phục vụ recommendation của nhóm | Proposal/blog; chờ minh chứng triển khai |
+| CLIP | Ý tưởng visual search của nhóm | Proposal; frontend hiện có chưa triển khai |
 
-### 8. Kết quả kỳ vọng  
-*Cải tiến kỹ thuật*: Dữ liệu và phân tích thời gian thực thay thế quy trình thủ công. Có thể mở rộng tới 10–15 trạm.  
-*Giá trị dài hạn*: Nền tảng dữ liệu 1 năm cho nghiên cứu AI, có thể tái sử dụng cho các dự án tương lai.
+## 7. Thiết kế thành phần
+
+### Frontend
+
+Source dùng React với Vite, React Router, Redux Toolkit và các UI component tái
+sử dụng. Route bao gồm home, product detail, category, text search, cart,
+checkout, account, seller, notification và admin. Khối gợi ý trên homepage hiện
+lấy lát cắt sản phẩm tĩnh; đây chưa phải bằng chứng tích hợp Personalize thật.
+
+### Backend và dữ liệu ứng dụng
+
+Proposal giao cho application Lambda phía sau API Gateway việc xác thực, xử lý
+nghiệp vụ, order, gọi recommendation và truy cập database. Tám bảng DynamoDB
+được liệt kê là `Products`, `Categories`, `Users`, `Sessions`, `Carts`,
+`Vouchers`, `Reviews`, `Orders`. Báo cáo giữ đây là thiết kế nhóm nhưng vẫn cần
+source backend/database hoặc bằng chứng triển khai.
+
+### Recommendation và visual search
+
+Thành viên/nhóm ML phụ trách dataset import, train solution, evaluation, deploy
+campaign và tích hợp. Proposal và blog mô tả Amazon Personalize cùng CLIP với
+cosine similarity. Các trách nhiệm này tách biệt với pipeline Data Engineering.
+
+### Data Engineering
+
+Pipeline đọc `interactions.csv` và product ID từ `Products.json` trong export
+ZIP. Pipeline nhận diện nhưng bỏ qua `items.csv`, kiểm tra schema và từng dòng,
+loại exact duplicate, giữ nguyên ID, rồi tạo clean, rejected, JSON report và
+Markdown report.
+
+## 8. Phân công nhóm
+
+| Vai trò | Trách nhiệm |
+|---|---|
+| Thành viên/nhóm Frontend | Giao diện React/Vite và luồng trình duyệt |
+| Thành viên/nhóm Backend | API ứng dụng, xác thực và nghiệp vụ |
+| Thành viên/nhóm Machine Learning | Train/evaluate/deploy Personalize và phần CLIP |
+| Thành viên/nhóm Cloud/Architecture | Kiến trúc AWS chung, triển khai, IAM và tích hợp |
+| Data Engineering — Trần Uy Danh | Ingestion, validation, quality report, batch pipeline AWS và bàn giao dữ liệu ML |
+
+## 9. Đóng góp cá nhân
+
+Đóng góp cá nhân của tôi là thành phần Data Engineering, bao gồm:
+
+- kiểm tra ZIP an toàn trong bộ nhớ với giới hạn kích thước nén/giải nén và số file;
+- tìm duy nhất một `interactions.csv` và một `Products.json` theo basename;
+- nhận diện và loại `items.csv` khỏi xử lý;
+- validation schema, missing value, event type, Unix timestamp dương, duplicate
+  và product ID;
+- bảo toàn `USER_ID`, `ITEM_ID`, không tạo mapping hay surrogate ID;
+- sinh `interactions_clean.csv`, `interactions_rejected.csv`, JSON report và
+  Markdown report tương đương;
+- chạy bằng CLI local và Lambda adapter nhận S3 event;
+- S3 private có SSE-S3, trigger có filter, policy tối thiểu và log retention qua
+  AWS SAM/CloudFormation;
+- automated tests và SQL xác minh Athena tùy chọn;
+- bàn giao clean dataset và report cho thành viên/nhóm ML.
+
+Tôi không nhận frontend, backend ứng dụng, thiết kế DynamoDB, model Personalize
+hay CLIP của nhóm là công việc cá nhân.
+
+## 10. Triển khai kỹ thuật
+
+SAM template giới hạn Lambda chỉ đọc `incoming/*` và chỉ ghi ba prefix output:
+
+```yaml
+Events:
+  IncomingZipCreated:
+    Type: S3
+    Properties:
+      Events: s3:ObjectCreated:*
+      Filter:
+        S3Key:
+          Rules:
+            - { Name: prefix, Value: incoming/ }
+            - { Name: suffix, Value: .zip }
+```
+
+Core chỉ chấp nhận bốn event type và giữ schema output cố định:
+
+```python
+REQUIRED_COLUMNS = ("USER_ID", "ITEM_ID", "EVENT_TYPE", "TIMESTAMP")
+VALID_EVENT_TYPES = {"view", "add_to_cart", "remove_from_cart", "purchase"}
+```
+
+Lambda ghi cả thư mục theo run ID và bản thuận tiện trong `latest/`. File đầy đủ
+được liên kết ở [Tài liệu tham khảo](../8-References/) thay vì sao chép vào báo cáo.
+
+## 11. Lộ trình và mốc triển khai
+
+| Thời gian | Mốc | Trạng thái |
+|---|---|---|
+| 15-28/06 | Onboarding, phân tích project, vai trò và yêu cầu dữ liệu | Hoàn thành |
+| 29/06-12/07 | Thiết kế data contract/pipeline và source ban đầu | Hoàn thành |
+| 13-26/07 | Làm rõ bàn giao ML, đồng bộ export thật, test/docs | Hoàn thành |
+| 27/07-02/08 | Hoàn thiện source, xác minh AWS, báo cáo Hugo | Đang thực hiện |
+| 03-09/08 | Minh chứng nhóm/cá nhân và workshop song ngữ | Kế hoạch |
+| 10-14/08 | Event, rà soát cuối, cleanup và nộp bài | Kế hoạch |
+
+## 12. Luồng dữ liệu và tích hợp
+
+1. Ứng dụng/database cung cấp file export ZIP.
+2. Data Engineering đọc `interactions.csv` và lookup product ID từ
+   `Products.json`; `items.csv` bị bỏ qua theo contract.
+3. Dòng sai vào rejected output; dòng hợp lệ giữ nguyên ID nguồn.
+4. `interactions_clean.csv` và quality report là gói bàn giao ML chính thức.
+5. Thành viên/nhóm ML chịu trách nhiệm import, train, evaluate và campaign.
+6. Backend được đề xuất ánh xạ item ID gợi ý về product ứng dụng và trả danh sách
+   xếp hạng cho frontend.
+
+Luồng này giữ join key quan trọng giữa dữ liệu ứng dụng nguồn và recommendation
+output downstream.
+
+## 13. Kiểm thử và đánh giá
+
+### Bằng chứng Data Engineering
+
+Repository ghi nhận **48 automated tests passed**. Export local đã kiểm tra cho
+kết quả:
+
+| Chỉ số | Kết quả |
+|---|---:|
+| Input rows | 23.377 |
+| Clean rows | 23.377 |
+| Rejected rows | 0 |
+| Exact duplicates | 0 |
+| User duy nhất | 200 |
+| Item duy nhất | 100 |
+| User/item ID sinh mới | 0 / 0 |
+| Bảo toàn ID | PASS |
+
+Bộ test bao phủ ZIP không an toàn hoặc malformed, thiếu file/cột, event và
+timestamp sai, thiếu ID, product lạ, duplicate, run ổn định, S3 event filtering,
+Lambda nhiều record và bảo toàn ID.
+
+### Đánh giá project nhóm và ML
+
+Blog/proposal được cung cấp ghi nhận Precision, NDCG, MRR và Coverage cho hai
+dataset Personalize. Đây là metric model recommendation thuộc phần ML của nhóm,
+không phải metric pipeline Data Engineering của tôi. Vẫn cần ảnh/source
+Personalize trực tiếp trước khi xem đây là bằng chứng triển khai. Kiểm thử
+frontend, API, checkout, recommendation và tích hợp toàn hệ thống cũng là bằng
+chứng cấp nhóm cần bổ sung.
+
+## 14. Ước tính ngân sách
+
+Bảng dưới là **ước tính từ proposal**, không phải hóa đơn hoặc billing thực tế.
+Giả định môi trường demo lưu lượng thấp; con số có thể thay đổi theo Region,
+thời gian hoạt động và bảng giá hiện hành.
+
+| Dịch vụ | Giả định trong proposal | Chi phí ước tính (USD/tháng) |
+|---|---|---:|
+| Lambda | Khoảng 1M lượt gọi, 512 MB, 200 ms trung bình | $0,20-$1,00 |
+| API Gateway HTTP API | Khoảng 1M request | Khoảng $1,00 |
+| DynamoDB on-demand | Tám bảng, khoảng 1M read/write units | $5-$10 |
+| S3 | Khoảng 5 GB và request | Khoảng $0,15 |
+| CloudFront | Khoảng 50 GB truyền ra | Khoảng $4,25 |
+| Personalize campaign | Một campaign chạy liên tục ở minimum TPS | $150-$220 |
+| Personalize training | Khoảng 2-4 giờ mỗi lần | $0,50-$1,00/lần |
+| CloudWatch | Log/monitoring cơ bản | Khoảng $1,00 |
+| **Tổng theo proposal** | Giả định campaign chạy liên tục | **Khoảng $160-$240/tháng** |
+
+Pipeline Data Engineering hoạt động theo event và không tạo EC2, RDS, NAT
+Gateway, OpenSearch hoặc SageMaker. SAM template giữ log trong bảy ngày.
+
+## 15. Rủi ro và giảm thiểu
+
+| Rủi ro | Cách giảm thiểu |
+|---|---|
+| Source lệch kiến trúc mục tiêu | Duy trì ma trận bằng chứng và contract có phiên bản |
+| User/product ID không còn khớp | Giữ ID nguồn và test điều kiện subset/lookup |
+| Archive sai hoặc không an toàn | Giới hạn size/member/path và dừng job |
+| Chất lượng interaction kém | Xuất báo cáo row/rejection/distribution trước ML import |
+| Chi phí Personalize khi idle | Chỉ tạo campaign trong cửa sổ test/demo cần thiết và cleanup |
+| Lộ secret hoặc dữ liệu người dùng | Dùng role/biến môi trường; rà soát ảnh và repository |
+| Frontend/backend lệch contract | Thống nhất request/response và data contract trước tích hợp |
+| Giới hạn xử lý trong bộ nhớ | Giữ giới hạn rõ; chỉ chuyển streaming/columnar khi quy mô yêu cầu |
+
+## 16. Kết quả kỳ vọng
+
+- Thiết kế project nhóm có thể truy vết cho toàn luồng e-commerce/recommendation.
+- Prototype React/Vite sử dụng được trong khi tích hợp cloud được xác minh.
+- Pipeline Data Engineering có test và gói interaction bàn giao ML.
+- Ranh giới trách nhiệm rõ giữa application, data, cloud và ML.
+- Báo cáo dựa trên bằng chứng, không nhầm kiến trúc mục tiêu với triển khai xong.
+
+## 17. Sản phẩm bàn giao
+
+| Sản phẩm | Trạng thái |
+|---|---|
+| Website báo cáo Hugo song ngữ | Đang thực hiện |
+| Source frontend nhóm | Có sẵn |
+| Source, README và kiến trúc Data Engineering | Có sẵn |
+| `template.yaml` và Lambda pipeline | Có sẵn |
+| Automated tests và quality report local | Có sẵn |
+| SQL Athena | Có sẵn; chưa có minh chứng chạy tùy chọn |
+| Data contract bàn giao clean dataset | Có sẵn |
+| Source backend/database/Personalize/CLIP của nhóm | Chờ thành viên phụ trách |
+| Ảnh triển khai nhóm và cá nhân | Chờ hoàn thành checklist |
+| Minh chứng Event và nộp bài | Kế hoạch |

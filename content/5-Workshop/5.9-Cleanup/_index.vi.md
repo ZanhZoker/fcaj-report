@@ -1,117 +1,38 @@
 ---
-title : "Dọn dẹp tài nguyên"
-date : 2026-07-28
-weight : 9
-chapter : false
-pre : " <b> 5.9 </b> "
+title: "Dọn dẹp tài nguyên"
+weight: 13
+chapter: false
+pre: " <b> 5.13 </b> "
 ---
 
 {{% notice warning %}}
-Làm phần này **ngay sau khi hoàn thành workshop**. Personalize campaign tính phí theo giờ tồn tại, quên xoá là hoá đơn tăng âm thầm từng ngày.
+Thao tác xóa không thể hoàn tác. Trước khi chạy lệnh, phải xác nhận AWS account, region, tên stack, tên bucket và minh chứng cần giữ. Thay mọi placeholder bằng giá trị đã kiểm tra trên console; không chạy lệnh phá hủy với tài nguyên phỏng đoán.
 {{% /notice %}}
 
-#### Thứ tự xoá
+#### Stack Data Engineering
 
-Thứ tự quan trọng vì các tài nguyên phụ thuộc lẫn nhau. Xoá theo đúng danh sách dưới, từ tốn tiền nhất tới ít tốn nhất.
-
-#### Bước 1. Xoá campaign --- ưu tiên cao nhất
+Các tài nguyên do SAM quản lý nên được xóa thông qua stack để CloudFormation xử lý đúng dependency:
 
 ```bash
-aws personalize delete-campaign --campaign-arn <CAMPAIGN-ARN>
+sam delete --stack-name <verified-data-pipeline-stack> --region <verified-region>
 ```
 
-Hoặc trên console: **Personalize** → **Campaigns** → chọn campaign → **Delete**.
+Trước khi xóa stack, kiểm tra và chỉ lưu lại các artifact không nhạy cảm thực sự cần thiết. Nếu bucket còn object làm cản trở thao tác xóa, phải xem lại chính xác bucket và danh sách object trước khi làm rỗng. Sau khi xóa, xác nhận S3 bucket, processing Lambda, IAM role, event notification và CloudWatch log group không còn tồn tại. Nếu đã dùng Athena, xóa riêng các object kết quả truy vấn.
 
-Chờ trạng thái chuyển sang **Delete pending** rồi biến mất khỏi danh sách.
+#### Tài nguyên ứng dụng nhóm
 
-#### Bước 2. Xoá solution và dataset group
+Thành viên phụ trách cần kiểm kê và chỉ xóa những tài nguyên thực sự được tạo cho project:
 
-Phải xoá theo đúng thứ tự này, nếu không sẽ báo lỗi phụ thuộc:
+1. Xóa Amazon Personalize campaign/recommender và solution version hoặc dataset phụ thuộc sau khi người phụ trách ML xác nhận không còn cần dùng.
+2. Disable và xóa đúng CloudFront distribution khi không còn phục vụ demo.
+3. Kiểm tra và xóa object cùng bucket S3 của ứng dụng.
+4. Xóa API Gateway, Lambda ứng dụng và log group qua stack sở hữu khi có thể.
+5. Export bản ghi cần lưu, sau đó xóa đúng các bảng DynamoDB.
+6. Kiểm tra IAM role và policy được tạo riêng cho project.
+7. Kiểm tra resource inventory và billing view của region để phát hiện tài nguyên còn phát sinh phí.
 
-```bash
-# Xoá solution trước
-aws personalize delete-solution --solution-arn <SOLUTION-ARN>
+Đây là quy trình thực hiện, không phải tuyên bố cleanup đã hoàn thành.
 
-# Đợi solution biến mất rồi xoá dataset
-aws personalize delete-dataset --dataset-arn <DATASET-ARN>
-
-# Cuối cùng xoá dataset group
-aws personalize delete-dataset-group --dataset-group-arn <DSG-ARN>
-```
-
-{{% notice note %}}
-Nếu solution có bật **automatic retraining**, hãy tắt trước khi xoá, nếu không nó có thể khởi động một lần huấn luyện mới và phát sinh chi phí.
-{{% /notice %}}
-
-#### Bước 3. Xoá CloudFront distribution
-
-CloudFront không cho xoá distribution đang bật, phải vô hiệu hoá trước.
-
-1. Mở [CloudFront console](https://console.aws.amazon.com/cloudfront/v4/home)
-2. Chọn distribution, chọn **Disable**
-3. Chờ khoảng 15 phút cho trạng thái chuyển sang **Deployed**
-4. Chọn lại distribution, chọn **Delete**
-
-#### Bước 4. Xoá bucket S3
-
-Bucket phải rỗng mới xoá được:
-
-```bash
-aws s3 rm s3://fcj-recsys-frontend-<tên-bạn> --recursive
-aws s3 rb s3://fcj-recsys-frontend-<tên-bạn>
-
-aws s3 rm s3://fcj-recsys-data-<tên-bạn> --recursive
-aws s3 rb s3://fcj-recsys-data-<tên-bạn>
-```
-
-#### Bước 5. Xoá API Gateway và Lambda
-
-```bash
-aws apigatewayv2 delete-api --api-id <API-ID>
-aws lambda delete-function --function-name fcj-recsys-api
-```
-
-#### Bước 6. Xoá bảng DynamoDB
-
-```bash
-for T in Products Categories Users Sessions Carts Vouchers Reviews Orders; do
-  aws dynamodb delete-table --table-name $T
-done
-```
-
-#### Bước 7. Xoá IAM role và alarm
-
-```bash
-aws iam delete-role-policy --role-name fcj-recsys-lambda-role --policy-name fcj-recsys-lambda-policy
-aws iam detach-role-policy --role-name fcj-recsys-lambda-role \
-  --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
-aws iam delete-role --role-name fcj-recsys-lambda-role
-
-aws cloudwatch delete-alarms --alarm-names fcj-lambda-errors fcj-lambda-latency
-```
-
-#### Bước 8. Rà soát lần cuối
-
-Đừng tin vào trí nhớ. Kiểm tra lại bằng Billing console:
-
-1. Mở [Billing console](https://console.aws.amazon.com/billing/home)
-2. Chọn **Bills**, xem có dịch vụ nào còn phát sinh chi phí không
-3. Kiểm tra thêm bằng [Resource Groups](https://console.aws.amazon.com/resource-groups/) để tìm tài nguyên còn sót
-
-{{% notice tip %}}
-Giữ lại **CloudWatch log group** cũng được, log rất rẻ và có thể hữu ích khi bạn cần xem lại. Nhưng nếu muốn sạch hoàn toàn thì xoá luôn ở CloudWatch console.
-{{% /notice %}}
-
-#### Bảng kiểm dọn dẹp
-
-| Tài nguyên | Đã xoá |
-|---|---|
-| Personalize campaign | ☐ |
-| Personalize solution và dataset group | ☐ |
-| CloudFront distribution | ☐ |
-| Hai bucket S3 | ☐ |
-| API Gateway | ☐ |
-| Hàm Lambda | ☐ |
-| Tám bảng DynamoDB | ☐ |
-| IAM role | ☐ |
-| CloudWatch alarm | ☐ |
+<!-- TODO: Team evidence - resource inventory before cleanup -->
+<!-- TODO: Team evidence - resource inventory after cleanup -->
+<!-- TODO: Personal evidence - SAM stack deletion or confirmed retained environment -->

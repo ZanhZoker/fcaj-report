@@ -1,113 +1,43 @@
 ---
 title: "Self-evaluation"
-date: 2026-07-29
 weight: 6
 chapter: false
 pre: " <b> 6. </b> "
 ---
 
-#### Self-evaluation summary
+#### Summary
 
-| Criterion | Level | Comment |
+| Area | Current level | Evidence and limitation |
 |---|---|---|
-| Knowledge | Good | Solid on serverless, weaker on networking and containers |
-| Learning ability | Strong | Reads primary documentation rather than hunting for ready answers |
-| Initiative | Strong | Proposed the data improvement when the model underperformed |
-| Discipline | Good | Kept to schedule, though the first two weeks lacked direction |
-| Communication | Good | Able to explain infrastructure concepts to non-specialists |
-| Teamwork | Fair to good | Fell short on agreeing data conventions at the start |
-| Problem solving | Good | Clear improvement in diagnosing faults layer by layer |
-| Contribution to the project | Strong | Owned all infrastructure and architectural decisions |
+| AWS fundamentals | Basic to good | I can explain the role of the services in the project, but I still need more independent production experience. |
+| Amazon S3 | Good in the practised scope | I designed input and output prefixes, private storage, encryption, and S3 event processing for the data pipeline. |
+| AWS Lambda | Good in the practised scope | I packaged a Python handler for ZIP processing and understand event-driven execution; operational tuning needs more practice. |
+| CloudWatch | Basic | I used execution logs and configured a seven-day log retention period; alarms and dashboards were outside my verified scope. |
+| SAM/CloudFormation | Basic to good | I can describe and validate the pipeline resources in `template.yaml`; broader multi-stack design remains a learning goal. |
+| Python and data processing | Good | I implemented archive reading, validation, reporting, command-line execution, and the Lambda entry point. |
+| Data validation and quality | Good | I check required values, event types, timestamps, duplicates, and product identifiers, then report clean and rejected rows. |
+| Automated testing | Good in project scope | The Data Engineering repository records 48 passing tests covering normal and failure cases. I need more experience with performance and integration testing. |
+| Git and GitHub | Good for daily collaboration | I can work with branches, reviews, documentation, and repository hygiene; release automation needs further practice. |
+| Teamwork and communication | Developing well | I clarified the data interface with other roles and learned to distinguish my deliverables from downstream ownership. |
 
-#### Detailed comments
+#### What I practised
 
-**Knowledge — Good**
+The most important technical result was turning an ambiguous export into a clear data contract. I learned that a pipeline is not complete when it only produces a CSV: it must define accepted files, schemas, validation rules, rejected-row handling, quality measurements, and a reproducible handoff. Preserving the application's original `USER_ID` and `ITEM_ID` values was essential because the recommendation result must map back to real users and products.
 
-Before the internship my understanding of cloud computing stopped at the
-conceptual level. By the end I had deployed a complete system of seven
-interconnected AWS services, and more importantly I could explain **why** each
-service was chosen over the alternatives. For instance, I can argue why DynamoDB
-suited this problem better than RDS, and why the CLIP model could not go on
-Lambda.
+I also improved my problem-solving process. When the earlier dataset did not align with real catalogue identifiers, I traced the mismatch across the export and downstream requirements, confirmed `Products.json` as the product lookup, ignored the unused `items.csv`, and updated tests and documentation together with the code. This was more reliable than adapting one file without revisiting the contract.
 
-My weak area is networking. The serverless architecture meant I barely touched
-VPCs, subnets or security groups. This is a gap I need to close myself.
+#### Collaboration and communication
 
-**Learning ability — Strong**
+The project required coordination across frontend, backend, database, cloud, ML, and Data Engineering roles. I practised asking for exact input and output examples, recording assumptions, and communicating breaking changes. A key lesson is to agree on identifiers, timestamps, event names, and file ownership before implementation begins. I can now contribute more clearly in technical discussions, although I still need to make status and risks visible earlier.
 
-The programme runs on self-study with no step-by-step guidance. I found this hard
-at first, being used to detailed instructions, but it forced me to read official
-AWS documentation instead of looking for ready-made answers.
+#### Limitations
 
-I also came to see the difference between making a system work and understanding
-why it works. There were parts I built by following a guide where everything ran
-correctly, yet when something broke I had no idea where to start. I then spent
-time re-reading the code and rebuilding small components myself.
+I do not consider myself an AWS or Data Engineering expert. My strongest evidence is within this pipeline's validation, testing, reporting, and SAM configuration. I have less hands-on evidence for production-scale observability, networking, infrastructure security reviews, Athena operations, and the team's backend or Personalize deployment. Those areas should not be inferred from my contribution.
 
-**Initiative — Strong**
+#### Next learning goals
 
-When the first recommendation model performed poorly, I did not simply report the
-numbers. I analysed the cause, found the problem lay in the uniformly random
-data, and proposed and implemented a regenerated dataset simulating real
-behaviour. Metrics improved by 2.8 to 5.9 times.
-
-I also set up budget alerts and ran a security review without being asked.
-
-**Discipline — Good**
-
-I kept to the planned schedule and hit the milestones on time. However, my first
-two weeks of study lacked direction because no project had been chosen yet,
-wasting time. If I did this again I would settle the topic sooner so the learning
-had focus.
-
-**Communication — Good**
-
-The Cloud Architect role required working with teammates from different
-specialities. I had to explain infrastructure concepts in plain language to
-someone unfamiliar with AWS terminology, and conversely understand requirements
-from the frontend and data sides. This is a skill I can perform but have not yet
-mastered.
-
-**Teamwork — Fair to good**
-
-What I did well was spotting early that the frontend and backend data contracts
-had diverged, and choosing an adapter layer rather than making both sides patch
-each other, preserving the tested work on both sides.
-
-What I did poorly was failing to agree data conventions with the whole team from
-the start. As a result our data engineer's pipeline produced identifiers that did
-not match the real catalogue, so its output could not be loaded into the model,
-and she had to raise it before I noticed. This was my shortcoming as architect,
-since defining the data interfaces between components was my responsibility.
-
-**Problem solving — Good**
-
-Early on, when something failed I would try things at random until it worked, and
-still not know why. Over time I built the habit of reading error messages
-carefully, identifying which layer had failed, then testing each layer from the
-inside out.
-
-One example: after uploading a new build to S3 the site rendered blank. I spent a
-long time checking code before realising CloudFront was serving a cached old
-version. Next time I saw those symptoms, I checked cache first.
-
-A harder example: DynamoDB does not guarantee results in the order keys are
-passed in, so the model's ranking was being lost. This produced no error message
-and was only detectable by carefully comparing the returned data.
-
-**Contribution to the project — Strong**
-
-I owned the entire AWS infrastructure and the architectural decisions, deployed
-my teammates' code to the live environment, built the adapter layer resolving the
-data contract mismatch, set up and improved the recommendation engine, and
-managed security and cost.
-
-The contribution I value most is not the number of services deployed, but
-identifying that the problem lay in the data rather than the algorithm, and
-proving it with quantitative evidence.
-
-#### Development plan
-
-I plan to study towards the **AWS Solutions Architect Associate** certification
-and rebuild a small project from scratch to test what I have learned. For my weak
-areas I will focus on AWS networking and container services such as ECS and EKS.
+1. Complete an independently evidenced SAM deployment and operational runbook.
+2. Practise Athena-based verification, partitioned data layouts, and lifecycle management.
+3. Add end-to-end tests from application export through the ML handoff.
+4. Improve monitoring, cost controls, IAM review, and secure secret management.
+5. Study reliable batch processing patterns, orchestration, and data lineage on AWS.

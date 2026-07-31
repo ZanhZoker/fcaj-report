@@ -1,6 +1,5 @@
 ---
 title: "Internship Report"
-date: 2026-07-28
 weight: 1
 chapter: false
 ---
@@ -9,45 +8,36 @@ chapter: false
 
 ### Student Information
 
-&emsp; **Full Name:** Tran Minh Tri
-
-&emsp; **Phone Number:** 0835937448
-
-&emsp; **Email:** tri.tran17062005@hcmut.edu.vn
-
-&emsp; **Student ID:** 2313627
+&emsp; **Full name:** Trần Uy Danh
 
 &emsp; **University:** Ho Chi Minh City University of Technology (HCMUT) - VNU-HCM
 
-&emsp; **Faculty:** Faculty of Computer Science and Engineering
+&emsp; **Major:** Computer Engineering
 
-&emsp; **Major:** Computer Science
+&emsp; **Internship organisation:** AWS-FCAJ
 
-&emsp; **Class:** MT23KHM4
+&emsp; **Internship position:** Data Engineering
 
-&emsp; **Internship Company:** Amazon Web Services Viet Nam Company Limited
+&emsp; **Internship period:** 15 June 2026 - 14 August 2026
 
-&emsp; **Internship Position:** AI Engineer - First Cloud AI Journey
-
-&emsp; **Internship Duration:** From 01/06/2026 to 15/08/2026
-
-![Profile picture](/images/avatar.png?width=200px)
+&emsp; **Email:** [danh.tranuy@hcmut.edu.vn](mailto:danh.tranuy@hcmut.edu.vn)
 
 ### About This Report
 
-This report documents my internship at the First Cloud AI Journey programme,
-where I worked as Cloud Architect on a five-member team building a serverless
-e-commerce platform with a personalised product recommendation system on AWS.
+This report presents the team's AWS e-commerce system, which combines product
+browsing and shopping flows with recommendation and visual-search concepts. The
+target architecture connects a React/Vite frontend with serverless application,
+database, and machine-learning components. Each section distinguishes
+source-verified implementation from proposal-level design and pending team
+evidence.
 
-The technical core of the project is Amazon Personalize, integrated into a
-serverless architecture using S3, CloudFront, API Gateway, Lambda and DynamoDB.
-The most valuable finding was quantitative evidence that training data quality
-matters more than algorithm choice: keeping the recipe fixed and changing only
-how the interaction data was generated improved evaluation metrics by 2.8 to 5.9
-times.
-
-The workshop section is written as a step-by-step lab so that another person can
-reproduce the entire system from an empty AWS account.
+My main contribution is the Data Engineering pipeline for interaction data. I
+designed and implemented the workflow that reads an export ZIP, validates and
+normalises `interactions.csv`, checks product identifiers against
+`Products.json`, preserves the original `USER_ID` and `ITEM_ID`, and hands
+`interactions_clean.csv` plus quality reports to the Machine Learning stage.
+Frontend, backend, application database, recommendation training, and visual
+search remain team components rather than my individual work.
 
 ### Report Contents
 
@@ -58,3 +48,11 @@ reproduce the entire system from an empty AWS account.
 5.  [Workshop](5-Workshop/)
 6.  [Self-evaluation](6-Self-evaluation/)
 7.  [Sharing and Feedback](7-Feedback/)
+8.  [References](8-References/)
+
+### Project Links
+
+- [Report website](https://zanhzoker.github.io/fcaj-report/)
+- [Report repository](https://github.com/ZanhZoker/fcaj-report)
+- [Data Engineering repository](https://github.com/ZanhZoker/ecommerce-interactions-pipeline)
+- [Team e-commerce repository](https://github.com/dxsondangdung2019-arch/E-commerceWebsiteDesign)

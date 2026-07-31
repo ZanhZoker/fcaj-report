@@ -1,58 +1,38 @@
 ---
 title: "Week 8"
-date: 2026-07-29
 weight: 8
 chapter: false
 pre: " <b> 1.8 </b> "
 ---
 
-#### Week 8 — Data improvement and retraining
+#### Week 8 — Evidence and bilingual workshop
 
-**Dates:** 20/07 - 26/07/2026
+**Dates:** 03-09 August 2026
 
-#### Goals
+**Status:** Planned
 
-- Analyse why the model performed poorly
-- Build a dataset simulating realistic shopping behaviour
-- Retrain and compare metrics across both versions
-- Handle a security incident arising during code handover
+#### Objectives
 
-#### Work carried out
+- Complete verified AWS evidence and the bilingual workshop.
+- Add Athena evidence only if the optional verification is actually run.
 
-Re-examined the first dataset and identified the cause: collaborative filtering
-works by finding groups of users who behave alike. If everyone interacts at
-random, no such groups exist. Changing the algorithm would not solve this.
+#### Activities
 
-Rewrote the data generator to simulate five properties of real behaviour:
-browsing sessions, a view to add-to-cart to purchase funnel, a power-law
-distribution, time-of-day rhythms, and user segments with different tastes. The
-result was 23,377 interactions across 200 users.
-
-Retrained on the same recipe and compared metrics against the previous version.
-Switched the campaign to the new solution version.
-
-During code handover, I discovered a source archive shared through cloud storage
-contained a config file with an AWS access key. I revoked the key immediately and
-changed the handover process.
+Planned work includes collecting screenshots for the team components from the
+responsible members, capturing personal Data Engineering evidence, reconciling
+AWS results with the local quality report, and reviewing English/Vietnamese
+parity across the website.
 
 #### Results
 
-Metrics improved substantially across every measure:
+No result is claimed yet. Completion requires screenshots or other direct
+evidence for each deployed component.
 
-| Metric | Data v1 | Data v2 | Improvement |
-|---|---|---|---|
-| Precision@5 | 0.0889 | 0.4348 | 4.9x |
-| NDCG@10 | 0.1799 | 0.6512 | 3.6x |
-| MRR@25 | 0.1216 | 0.7130 | 5.9x |
-| Coverage | 0.8218 | 0.9505 | +15.7% |
+#### Challenges
 
-Conclusion: training data quality determines model performance more than
-algorithm choice.
+Evidence can easily reveal account IDs, user data, or credentials. Every image
+will require scope and privacy review before publication.
 
-#### Difficulties and how they were resolved
+#### Next steps
 
-The leaked access key was the most memorable lesson. The impact was low because
-the key was read-only, which was itself the result of applying least privilege
-from the start. The lesson: the principle does not prevent mistakes, but it
-determines how much damage they cause. The team moved to centralised source
-control on Git instead of sharing archives.
+Close remaining screenshot items and verify the rendered Hugo website.

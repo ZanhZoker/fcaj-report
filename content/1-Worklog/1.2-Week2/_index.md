@@ -1,42 +1,39 @@
 ---
 title: "Week 2"
-date: 2026-07-29
 weight: 2
 chapter: false
 pre: " <b> 1.2 </b> "
 ---
 
-#### Week 2 — Serverless architecture
+#### Week 2 — System and data analysis
 
-**Dates:** 08/06 - 14/06/2026
+**Dates:** 22-28 June 2026
 
-#### Goals
+**Status:** Completed
 
-- Understand serverless compute and when it is appropriate
-- Deploy a first Lambda function
-- Connect Lambda to API Gateway to create an Internet-reachable endpoint
-- Get familiar with DynamoDB and the NoSQL data model
+#### Objectives
 
-#### Work carried out
+- Clarify frontend, backend, ML, cloud, and data responsibilities.
+- Understand users, products, and interaction data needed for recommendation.
 
-Wrote and deployed a simple Node.js Lambda function, experimenting with
-different timeout and memory settings to observe the effect.
+#### Activities
 
-Created an HTTP API in API Gateway, wired it to Lambda and tested it with `curl`.
-Studied the event structure API Gateway passes to Lambda.
-
-Created a first DynamoDB table and practised PutItem, GetItem, Query and Scan.
-Compared the cost and speed of Query versus Scan on the same table.
+I analysed the team proposal and frontend source, then mapped the intended
+application flow against the data needed downstream. The key integration need
+was a four-column interaction dataset whose user and item identifiers still
+match the source system.
 
 #### Results
 
-- Deployed a complete API running on the Internet with no servers to manage
-- Understood the fundamental difference between Query and Scan in DynamoDB
-- Realised NoSQL table design follows access patterns rather than normalisation
+- Identified `USER_ID`, `ITEM_ID`, `EVENT_TYPE`, and `TIMESTAMP` as the logical
+  interaction fields.
+- Documented that product identifiers require a trusted application lookup.
 
-#### Difficulties and how they were resolved
+#### Challenges
 
-I hit a problem where Lambda called DynamoDB and returned a permissions error.
-Re-reading the documentation, I learned that Lambda uses an execution role rather
-than the creator's credentials. This was the first time IAM felt practical rather
-than theoretical.
+The proposal described more cloud components than the available application
+source confirmed. I kept design intent separate from implementation evidence.
+
+#### Next steps
+
+Design ingestion, validation, output zones, and a handoff contract for ML.

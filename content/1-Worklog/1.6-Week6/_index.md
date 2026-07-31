@@ -1,45 +1,42 @@
 ---
 title: "Week 6"
-date: 2026-07-29
 weight: 6
 chapter: false
 pre: " <b> 1.6 </b> "
 ---
 
-#### Week 6 — Frontend integration with the live API
+#### Week 6 — Alignment with the real export
 
-**Dates:** 06/07 - 12/07/2026
+**Dates:** 20-26 July 2026
 
-#### Goals
+**Status:** Completed
 
-- Connect the entire React frontend to the live API
-- Resolve the data contract mismatch between frontend and backend
-- Deploy the frontend to S3 and CloudFront
-- Verify the business flows end to end
+#### Objectives
 
-#### Work carried out
+- Align processing with the confirmed export contract.
+- Update automated tests and technical documentation.
 
-During integration I found that the frontend and backend, developed in parallel,
-had divergent data contracts: payment methods, order statuses, price field names
-and voucher identifiers all differed.
+#### Activities
 
-I weighed three options: change the backend, change the frontend, or insert an
-adapter layer. I chose the third because it preserves the already-tested work on
-both sides. All translation was concentrated in a single file, converting data in
-both directions.
-
-Built the frontend, uploaded it to S3 and created a CloudFront invalidation.
-Verified the flows: registration, login, product browsing, add to cart, discount
-codes, checkout and order history.
+I restricted processing to `interactions.csv`, read the `id` field from
+`Products.json` for validation, and explicitly ignored `items.csv`. The pipeline
+keeps `USER_ID` and `ITEM_ID` as strings, rejects invalid products and exact
+duplicates, and generates no surrogate IDs. I updated the test suite and
+documentation for local and AWS execution.
 
 #### Results
 
-- A complete website on CloudFront covering all business flows
-- An adapter layer resolving the contract mismatch, making the boundary explicit
-- The server recalculates order totals rather than trusting the browser
+- Current report: 23,377 input and clean rows, 0 rejected, 0 duplicates.
+- 200 unique users, 100 unique items, and ID-preservation status `PASS`.
+- Generated user IDs: 0; generated item IDs: 0.
 
-#### Difficulties and how they were resolved
+#### Challenges
 
-The effort required to connect components written by different people was far
-greater than expected. The lesson: data contracts between layers must be agreed
-in writing at the start, before anyone begins coding.
+The earlier assumptions around `items.csv` conflicted with the real application
+export. Treating the contract as versioned technical documentation made the
+change explicit and testable.
+
+#### Next steps
+
+Complete source review, verify the automated tests, and prepare AWS deployment
+and report evidence.
